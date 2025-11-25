@@ -1,0 +1,25 @@
+{
+  "name": "frontier-ctf",
+  "version": "1.0.0",
+  "description": "Frontier CTF Community Platform",
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "cd backend && npm run dev",
+    "client": "cd frontend && npm run dev",
+    "build": "cd frontend && npm run build",
+    "start": "cd backend && npm start"
+  },
+  "keywords": [
+    "ctf",
+    "community",
+    "board"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "mongoose": "^8.20.1"
+  }
+}
