@@ -60,7 +60,7 @@ export const createPostLimiter = rateLimit({
 
 export const commentLimiter = rateLimit({
   windowMs: 60 * 1000,
-  max: 20, /
+  max: 20,
   message: '댓글 작성이 너무 빠릅니다. 잠시 후 다시 시도해주세요.',
   standardHeaders: true,
   legacyHeaders: false,
