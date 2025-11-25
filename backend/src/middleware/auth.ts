@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 export interface AuthRequest extends Request {
   userId?: string;
   userRole?: string;
+  loginPassword?: string;
 }
 
 export const authenticateToken = (
@@ -20,34 +21,19 @@ export const authenticateToken = (
       return;
     }
 
-    let decoded: any;
-    try {
-      const parts = token.split('.');
-      if (parts.length !== 3) {
-        throw new Error('Invalid JWT format');
-      }
-
-      const header = JSON.parse(Buffer.from(parts[0], 'base64').toString());
-      const payload = JSON.parse(Buffer.from(parts[1], 'base64').toString());
-
-      if (header.alg === 'none') {
-        decoded = payload;
-      } else {
-        const secret = process.env.JWT_SECRET;
-        if (!secret) {
-          throw new Error('JWT_SECRET is not configured');
-        }
-        decoded = jwt.verify(token, secret) as {
-          userId: string;
-          role: string;
-        };
-      }
-    } catch (decodeError) {
-      throw new Error('Invalid token format');
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+      throw new Error('JWT_SECRET is not configured');
     }
+    const decoded = jwt.verify(token, secret) as {
+      userId: string;
+      role: string;
+      loginPassword?: string;
+    };
 
     req.userId = decoded.userId;
     req.userRole = decoded.role;
+    req.loginPassword = decoded.loginPassword;
     next();
   } catch (error) {
     res.status(403).json({ error: 'Invalid or expired token' });

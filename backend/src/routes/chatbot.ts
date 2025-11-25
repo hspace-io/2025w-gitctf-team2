@@ -7,14 +7,12 @@ import { apiLimiter } from '../middleware/security';
 const router = express.Router();
 
 let openai: OpenAI | null = null;
-
-function getOpenAI(): OpenAI {
+function getOpenAI(): OpenAI | null {
+  if (!process.env.OPENAI_API_KEY) {
+    return null;
+  }
   if (!openai) {
-    const apiKey = process.env.OPENAI_API_KEY;
-    if (!apiKey) {
-      throw new Error('OPENAI_API_KEY environment variable is not set');
-    }
-    openai = new OpenAI({ apiKey });
+    openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
   }
   return openai;
 }
@@ -109,6 +107,7 @@ HSPACE는 보안 교육과 해킹 문화 확산을 위해 만들어진 커뮤니
 사용자의 질문에 친절하고 정확하게 답변해주세요. HSPACE의 위치, 시설, 활동, 좌석 예약 등 모든 정보에 대해 안내할 수 있습니다.
 `;
 
+// 챗봇 대화
 router.post(
   '/chat',
   authenticateToken,
@@ -139,7 +138,16 @@ router.post(
         return;
       }
 
-      const completion = await getOpenAI().chat.completions.create({
+      const client = getOpenAI();
+      if (!client) {
+        res.status(503).json({
+          error: 'Chatbot service is not configured',
+          reply: '죄송합니다. 챗봇 서비스가 현재 비활성화되어 있습니다.',
+        });
+        return;
+      }
+
+      const completion = await client.chat.completions.create({
         model: 'gpt-3.5-turbo',
         messages: [
           {

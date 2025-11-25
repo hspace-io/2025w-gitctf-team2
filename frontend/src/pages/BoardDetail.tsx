@@ -210,6 +210,7 @@ const BoardDetail = () => {
           </button>
         </div>
 
+        {/* 댓글 */}
         <div className="px-6 py-6 border-t border-night bg-surface">
           <h3 className="text-xl font-semibold mb-6 text-night-heading">
             댓글 {board.comments.length}

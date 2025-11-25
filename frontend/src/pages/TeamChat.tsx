@@ -97,7 +97,7 @@ const TeamChat = () => {
     if (!chatInput.trim() || !recruitId) return;
 
     const messageContent = chatInput.trim();
-    setChatInput(''); 
+    setChatInput(''); // 먼저 입력 필드 초기화
 
     try {
       setSendingChat(true);
@@ -105,6 +105,7 @@ const TeamChat = () => {
       
       if (newMessage) {
         setChatMessages(prev => {
+          // 중복 메시지 방지
           if (prev.some(m => m._id === newMessage._id)) {
             return prev;
           }
@@ -140,6 +141,7 @@ const TeamChat = () => {
 
   return (
     <div className="min-h-screen bg-night flex flex-col">
+      {/* 헤더 */}
       <div className="sticky top-0 z-10 bg-[#05070f]/95 backdrop-blur-xl border-b border-[#1b1f2f]">
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center gap-4">
           <button
@@ -175,8 +177,7 @@ const TeamChat = () => {
               const prevMessage = index > 0 ? chatMessages[index - 1] : null;
               const showAvatar = !prevMessage || prevMessage.author._id !== msg.author._id;
               const showTime = !prevMessage || 
-                new Date(msg.createdAt).getTime() - new Date(prevMessage.createdAt).getTime() > 300000; 
-
+                new Date(msg.createdAt).getTime() - new Date(prevMessage.createdAt).getTime() > 300000;
               return (
                 <div key={msg._id} className={`flex ${isMyMessage ? 'justify-end' : 'justify-start'} gap-2`}>
                   {!isMyMessage && (

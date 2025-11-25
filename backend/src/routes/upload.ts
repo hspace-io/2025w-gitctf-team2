@@ -32,7 +32,7 @@ const files = req.files as Express.Multer.File[];
         const newFile = new FileModel({
           filename: file.filename,
           originalName: file.originalname,
-          uploader: req.userId, 
+          uploader: req.userId,
           size: file.size,
           mimetype: file.mimetype,
         });
@@ -57,7 +57,6 @@ router.delete(
   async (req: AuthRequest, res: Response): Promise<void> => {
 try {
       let { filename } = req.params;
-
       
       if (!filename || filename.length > 255) {
         res.status(400).json({ error: 'Invalid filename: length exceeded' });
@@ -79,16 +78,16 @@ try {
       }
 
       const pathTraversalPatterns = [
-        '..',           
+        '..',          
         '/',            
-        '\\',           
-        '\u2215',       
-        '\u2216',       
-        '\uff0f',       
+        '\\',          
+        '\u2215',     
+        '\u2216',   
+        '\uff0f',      
         '\uff3c',      
-        '%2e',        
-        '%2f',         
-        '%5c',          
+        '%2e',      
+        '%2f',      
+        '%5c',    
       ];
 
       for (const pattern of pathTraversalPatterns) {
@@ -100,26 +99,26 @@ try {
       }
 
       const blockedPatterns = [
-        /^\.env/i,                   
-        /^package\.json$/i,          
-        /^package-lock\.json$/i,     
-        /^docker-compose/i,           
-        /^dockerfile$/i,              
-        /^tsconfig/i,                
+        /^\.env/i,                  
+        /^package\.json$/i,       
+        /^package-lock\.json$/i,    
+        /^docker-compose/i,        
+        /^dockerfile$/i,           
+        /^tsconfig/i,              
         /^\.git/i,                   
-        /^node_modules/i,             
-        /^src\//i,                    
-        /^dist\//i,                   
-        /^config/i,                   
-        /^\.dockerignore$/i,          
-        /^\.npmrc$/i,                 
+        /^node_modules/i,            
+        /^src\//i,                  
+        /^dist\//i,                  
+        /^config/i,              
+        /^\.dockerignore$/i,       
+        /^\.npmrc$/i,                
         /^yarn\.lock$/i,             
-        /^\.eslintrc/i,               
+        /^\.eslintrc/i,             
         /^\.prettierrc/i,             
-        /^webpack\.config/i,          
-        /^vite\.config/i,             
-        /^\.vscode/i,                
-        /^\.idea/i,                   
+        /^webpack\.config/i,         
+        /^vite\.config/i,          
+        /^\.vscode/i,               
+        /^\.idea/i,                
       ];
 
       for (const pattern of blockedPatterns) {

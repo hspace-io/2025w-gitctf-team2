@@ -56,8 +56,6 @@ COPY frontend/nginx.conf /etc/nginx/conf.d/default.conf
 RUN mkdir -p /app/uploads && \
     chmod 755 /app/uploads
 
-COPY .env /app/backend/.env
-
 RUN mkdir -p /var/ctf
 COPY flag /var/ctf/flag
 RUN chmod 644 /var/ctf/flag

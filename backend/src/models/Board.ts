@@ -6,7 +6,7 @@ export interface IBoard extends Document {
   category: 'notice' | 'anonymous' | 'wargame-ctf';
   author: mongoose.Types.ObjectId | string;
   isAnonymous: boolean;
-  images: string[]; 
+  images: string[];
   views: number;
   likes: mongoose.Types.ObjectId[];
   comments: IComment[];

@@ -105,6 +105,7 @@ const FloatingChatbot = () => {
 
       {isOpen && (
         <div className="fixed bottom-24 right-6 w-96 h-[600px] card flex flex-col z-50 animate-fade-up bg-surface-2 border border-night shadow-card">
+          {/* 헤더 */}
           <div className="night-gradient px-5 py-4 rounded-t-2xl flex items-center justify-between">
             <div>
               <h3 className="text-white font-semibold flex items-center gap-2">

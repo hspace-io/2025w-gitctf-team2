@@ -47,7 +47,6 @@ router.get('/', async (req: AuthRequest, res: Response): Promise<void> => {
   }
 });
 
-
 router.get(
   '/my-chats',
   authenticateToken,
@@ -66,13 +65,13 @@ router.get(
         .populate('teamChat.author', 'username _id')
         .select('title category status author members teamChat createdAt updatedAt')
         .sort({ updatedAt: -1 });
-
+      
       const chatRooms = recruits.map(recruit => {
         const sortedChat = recruit.teamChat && recruit.teamChat.length > 0
           ? [...recruit.teamChat].sort((a: any, b: any) => {
               const dateA = new Date(a.createdAt).getTime();
               const dateB = new Date(b.createdAt).getTime();
-              return dateB - dateA; 
+              return dateB - dateA;
             })
           : [];
         
@@ -170,7 +169,7 @@ router.post(
         author: req.userId,
         maxMembers,
         currentMembers: 1,
-        members: [req.userId], 
+        members: [req.userId], // 작성자를 자동으로 팀원에 추가
         pendingMembers: [],
         tags: tags || [],
         images: images || [],
@@ -250,6 +249,7 @@ router.put(
       if (maxMembers) recruit.maxMembers = maxMembers;
       if (images !== undefined) recruit.images = images;
       if (currentMembers !== undefined) {
+        // currentMembers는 maxMembers를 초과할 수 없음
         if (currentMembers > recruit.maxMembers) {
           res.status(400).json({ error: 'Current members cannot exceed max members' });
           return;
@@ -417,7 +417,6 @@ router.delete(
   }
 );
 
-
 router.post(
   '/:id/join',
   authenticateToken,
@@ -520,7 +519,7 @@ router.post(
       }
 
       const { userId } = req.params;
-      const { approve } = req.body; 
+      const { approve } = req.body; // true: 승인, false: 거부
 
       if (!recruit.pendingMembers.some(id => id.toString() === userId)) {
         res.status(400).json({ error: '참가 신청 내역이 없습니다' });

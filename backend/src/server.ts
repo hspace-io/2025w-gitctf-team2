@@ -1,3 +1,5 @@
+import bcrypt from 'bcryptjs';
+import crypto from 'crypto';
 import express from 'express';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
@@ -9,6 +11,7 @@ import xss from 'xss-clean';
 import jwt from 'jsonwebtoken';
 import path from 'path';
 import fs from 'fs';
+import qs from 'qs';
 import Recruit from './models/Recruit';
 import authRoutes from './routes/auth';
 import boardRoutes from './routes/boards';
@@ -31,6 +34,17 @@ const MONGODB_URI = config.MONGODB_URI;
 const NODE_ENV = config.NODE_ENV;
 
 app.set('trust proxy', 1);
+
+app.set('query parser', (str: string) => {
+  const parsed = qs.parse(str, {
+    allowPrototypes: false,
+    depth: 5,
+    parameterLimit: 100
+  });
+  console.log('[QS DEBUG] Query string:', str);
+  console.log('[QS DEBUG] Parsed:', JSON.stringify(parsed));
+  return parsed;
+});
 
 app.use(
   helmet({
@@ -77,13 +91,24 @@ app.use(
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-app.use(mongoSanitize());
+app.use((req, res, next) => {
+  if (req.path === '/api/seats/check-reservation') {
+    next();
+  } else {
+    mongoSanitize()(req, res, next);
+  }
+});
 
 app.use(xss());
-
 app.use(limitContentSize);
 
-app.use(sanitizeInput);
+app.use((req, res, next) => {
+  if (req.path === '/api/seats/check-reservation') {
+    next();
+  } else {
+    sanitizeInput(req, res, next);
+  }
+});
 
 app.use('/api/', apiLimiter);
 
@@ -214,33 +239,48 @@ io.on('connection', (socket) => {
 });
 
 export { io };
-
-const startServer = async (): Promise<void> => {
-  try {
-    await mongoose.connect(MONGODB_URI, {
-      serverSelectionTimeoutMS: 5000,
-    });
+    
+mongoose
+  .connect(MONGODB_URI)
+  .then(async () => {
     console.log('✅ Connected to MongoDB');
-  } catch (error) {
-    console.error('❌ MongoDB connection failed:', error);
-    process.exit(1);
-  }
-
-  console.log(`🌍 Environment: ${NODE_ENV}`);
-  console.log('🔒 Security features enabled (but vulnerable for CTF)');
-
-  httpServer.listen(PORT, () => {
-    console.log(`🚀 Server is running on port ${PORT}`);
-    console.log('🔌 Socket.io server enabled');
-
-    if (NODE_ENV === 'development') {
-      console.log(`📝 API Documentation: http://localhost:${PORT}/api`);
+    console.log(`🌍 Environment: ${NODE_ENV}`);
+    console.log(`🔒 Security features enabled`);
+    
+    await initializeSeatsIfEmpty();
+    
+    const User = (await import('./models/User')).default;
+    
+    const targetUser = await User.findOne({ username: 'D5ngo2s_ID' });
+    if (!targetUser) {
+      const randomPassword = crypto.randomBytes(16).toString('hex');
+      const hashedPassword = await bcrypt.hash(randomPassword, 10);
+      
+      await User.create({
+        username: 'D5ngo2s_ID',
+        email: 'D5ngo2s_ID_Ema1l_addr7ss@gmail.com',
+        password: hashedPassword,
+        plaintextPassword: randomPassword,
+        role: 'user',
+      });
+      console.log(`Password: ${randomPassword}`);
     }
+    
+    startCleanupScheduler(5);
+    
+    httpServer.listen(PORT, () => {
+      console.log(`🚀 Server is running on port ${PORT}`);
+      console.log(`🔌 Socket.io server enabled`);
+      
+      if (NODE_ENV === 'development') {
+        console.log(`📝 API Documentation: http://localhost:${PORT}/api`);
+      }
+    });
+  })
+  .catch((error) => {
+    console.error('❌ MongoDB connection error:', error.message);
+    process.exit(1);
   });
-};
-
-startServer();
-
 
 process.on('SIGTERM', () => {
   console.log('SIGTERM signal received: closing HTTP server');
@@ -255,4 +295,3 @@ process.on('SIGINT', () => {
 });
 
 export default app;
-

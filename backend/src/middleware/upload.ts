@@ -12,8 +12,8 @@ const storage = multer.diskStorage({
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
     const ext = path.extname(file.originalname).toLowerCase();
     const nameWithoutExt = path.basename(file.originalname, ext)
-      .replace(/[^a-zA-Z0-9가-힣._-]/g, '_')  
-      .slice(0, 50);  
+      .replace(/[^a-zA-Z0-9가-힣._-]/g, '_') 
+      .slice(0, 50);
     cb(null, `${uniqueSuffix}-${nameWithoutExt}${ext}`);
   },
 });
@@ -26,9 +26,9 @@ const fileFilter = (req: Request, file: Express.Multer.File, cb: multer.FileFilt
   const ext = path.extname(file.originalname).toLowerCase();
 
   if (allowedMimeTypes.includes(file.mimetype) && allowedExtensions.includes(ext)) {
-    cb(null, true); 
+    cb(null, true);
   } else {
-    cb(new Error('Only image files are allowed!')); 
+    cb(new Error('Only image files are allowed!')); // 차단
   }
 };
 
@@ -36,7 +36,7 @@ export const upload = multer({
   storage: storage,
   fileFilter: fileFilter,
   limits: {
-    fileSize: 5 * 1024 * 1024, 
+    fileSize: 5 * 1024 * 1024,
   },
 });
 

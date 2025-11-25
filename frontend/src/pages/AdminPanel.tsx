@@ -74,9 +74,9 @@ const AdminPanel = () => {
             </button>
           </div>
 
+          {/* 좌석 관리 */}
           <div className="card p-6">
             <h2 className="text-xl font-bold text-night-heading mb-4">좌석 관리</h2>
-
             <div className="space-y-4">
               <div className="bg-surface-2 border border-night rounded-xl p-4">
                 <h3 className="font-semibold text-night-heading mb-2">좌석 초기화</h3>

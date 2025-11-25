@@ -230,7 +230,7 @@ class DiscordService {
         messageId: message.id,
         channelId: channelConfig.id,
         channelName: channelConfig.name,
-        threadName: threadName, 
+        threadName: threadName,
         content: message.content,
         author: {
           username: message.author.username,

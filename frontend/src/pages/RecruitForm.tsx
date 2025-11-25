@@ -246,6 +246,7 @@ const RecruitForm = () => {
             </p>
           </div>
 
+          {/* 이미지 업로드 */}
           <div>
             <label className="block text-sm font-medium text-night mb-2">
               이미지 (최대 5개, 각 5MB 이하)

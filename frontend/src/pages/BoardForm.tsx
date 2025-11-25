@@ -75,6 +75,7 @@ const BoardForm = () => {
       alert(error.response?.data?.error || '이미지 업로드에 실패했습니다.');
     } finally {
       setUploading(false);
+      // Reset input
       e.target.value = '';
     }
   };

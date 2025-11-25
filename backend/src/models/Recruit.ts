@@ -8,15 +8,15 @@ export interface IRecruit extends Document {
   status: 'recruiting' | 'closed';
   maxMembers: number;
   currentMembers: number;
-  members: mongoose.Types.ObjectId[]; 
-  pendingMembers: mongoose.Types.ObjectId[]; 
+  members: mongoose.Types.ObjectId[];
+  pendingMembers: mongoose.Types.ObjectId[];
   tags: string[];
-  images: string[]; 
+  images: string[];
   deadline?: Date;
   views: number;
   likes: mongoose.Types.ObjectId[];
   comments: IRecruitComment[];
-  teamChat: ITeamChatMessage[]; 
+  teamChat: ITeamChatMessage[];
   createdAt: Date;
   updatedAt: Date;
 }

@@ -73,6 +73,7 @@ const DiscordMessageSchema = new Schema<IDiscordMessage>(
   }
 );
 
+// 인덱스 설정
 DiscordMessageSchema.index({ channelId: 1, timestamp: -1 });
 DiscordMessageSchema.index({ type: 1, timestamp: -1 });
 

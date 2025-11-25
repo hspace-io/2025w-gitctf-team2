@@ -16,7 +16,7 @@ export const apiLimiter = rateLimit({
 });
 
 export const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, 
+  windowMs: 15 * 60 * 1000, // 15분
   max: 5, 
   message: '너무 많은 로그인 시도가 발생했습니다. 15분 후 다시 시도해주세요.',
   standardHeaders: true,
@@ -31,7 +31,7 @@ export const authLimiter = rateLimit({
 });
 
 export const registerLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, 
+  windowMs: 60 * 60 * 1000,
   max: 3, 
   message: '너무 많은 회원가입 시도가 발생했습니다. 1시간 후 다시 시도해주세요.',
   standardHeaders: true,
@@ -59,8 +59,8 @@ export const createPostLimiter = rateLimit({
 });
 
 export const commentLimiter = rateLimit({
-  windowMs: 60 * 1000, 
-  max: 20, 
+  windowMs: 60 * 1000,
+  max: 20, /
   message: '댓글 작성이 너무 빠릅니다. 잠시 후 다시 시도해주세요.',
   standardHeaders: true,
   legacyHeaders: false,
@@ -78,7 +78,7 @@ export const limitContentSize = (
   next: NextFunction
 ): void => {
   const contentLength = req.headers['content-length'];
-  const maxSize = 10 * 1024 * 1024; 
+  const maxSize = 10 * 1024 * 1024; // 10MB
 
   if (contentLength && parseInt(contentLength) > maxSize) {
     res.status(413).json({
@@ -103,7 +103,9 @@ export const sanitizeInput = (
     /(\$regex)/gi,
   ];
 
-  const checkObject = (obj: any): boolean => {
+  const checkObject = (obj: any, depth: number = 0): boolean => {
+    if (depth > 10) return false;
+    
     for (const key in obj) {
       if (typeof obj[key] === 'string') {
         for (const pattern of dangerousPatterns) {
@@ -112,7 +114,7 @@ export const sanitizeInput = (
           }
         }
       } else if (typeof obj[key] === 'object' && obj[key] !== null) {
-        if (checkObject(obj[key])) {
+        if (checkObject(obj[key], depth + 1)) {
           return true;
         }
       }
@@ -129,4 +131,3 @@ export const sanitizeInput = (
 
   next();
 };
-

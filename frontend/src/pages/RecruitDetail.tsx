@@ -127,7 +127,6 @@ const RecruitDetail = () => {
     setEditingMembers(false);
   };
 
-  // 팀 참가 기능
   const handleJoinTeam = async () => {
     if (!isAuthenticated) {
       alert('로그인이 필요합니다.');
@@ -422,7 +421,7 @@ const RecruitDetail = () => {
                 </div>
               </div>
             )}
-
+            
             {isAuthor && recruit.pendingMembers && recruit.pendingMembers.length > 0 && (
               <div className="mb-4">
                 <p className="text-sm text-night-muted mb-2">참가 신청 대기:</p>
@@ -461,7 +460,7 @@ const RecruitDetail = () => {
                 팀 참가하기
               </button>
             )}
-
+            
             {isAuthenticated && isPendingMember && (
               <button
                 onClick={handleCancelJoin}
