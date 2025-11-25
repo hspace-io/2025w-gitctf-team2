@@ -109,7 +109,6 @@ export const recruitService = {
     return response.data;
   },
 
-  // 팀 참가 기능
   async joinTeam(recruitId: string) {
     const response = await api.post(`/recruits/${recruitId}/join`);
     return response.data;
@@ -132,7 +131,6 @@ export const recruitService = {
     return response.data;
   },
 
-  // 팀 채팅 기능
   async getTeamChat(recruitId: string) {
     const response = await api.get(`/recruits/${recruitId}/chat`);
     return response.data;

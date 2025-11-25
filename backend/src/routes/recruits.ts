@@ -47,6 +47,7 @@ router.get('/', async (req: AuthRequest, res: Response): Promise<void> => {
   }
 });
 
+
 router.get(
   '/my-chats',
   authenticateToken,
@@ -71,7 +72,7 @@ router.get(
           ? [...recruit.teamChat].sort((a: any, b: any) => {
               const dateA = new Date(a.createdAt).getTime();
               const dateB = new Date(b.createdAt).getTime();
-              return dateB - dateA; // 최신순
+              return dateB - dateA; 
             })
           : [];
         
@@ -83,7 +84,7 @@ router.get(
           category: recruit.category,
           status: recruit.status,
           author: recruit.author,
-          members: recruit.members,
+          members: recruit.members, 
           lastMessage: lastMessage ? {
             _id: lastMessage._id.toString(),
             content: lastMessage.content,
@@ -93,7 +94,7 @@ router.get(
               username: (lastMessage.author as any).username || 'Unknown',
             } : null,
           } : null,
-          unreadCount: 0,
+          unreadCount: 0, 
           createdAt: recruit.createdAt,
           updatedAt: recruit.updatedAt,
         };
@@ -129,7 +130,6 @@ router.get('/:id', validateObjectId('id'), async (req: AuthRequest, res: Respons
     res.status(500).json({ error: 'Server error' });
   }
 });
-
 
 router.post(
   '/',
@@ -170,7 +170,7 @@ router.post(
         author: req.userId,
         maxMembers,
         currentMembers: 1,
-        members: [req.userId],
+        members: [req.userId], 
         pendingMembers: [],
         tags: tags || [],
         images: images || [],
@@ -303,7 +303,6 @@ router.delete(
   }
 );
 
-
 router.post(
   '/:id/like',
   authenticateToken,
@@ -418,6 +417,7 @@ router.delete(
   }
 );
 
+
 router.post(
   '/:id/join',
   authenticateToken,
@@ -520,7 +520,7 @@ router.post(
       }
 
       const { userId } = req.params;
-      const { approve } = req.body; // true: 승인, false: 거부
+      const { approve } = req.body; 
 
       if (!recruit.pendingMembers.some(id => id.toString() === userId)) {
         res.status(400).json({ error: '참가 신청 내역이 없습니다' });

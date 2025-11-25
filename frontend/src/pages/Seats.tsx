@@ -124,9 +124,7 @@ const Seats = () => {
   const renderWhiteRoomSeats = () => {
     const whiteSeats = seats.filter((s: Seat) => s.room === 'white');
     
-    // 상단 12석 (2줄)
     const topSeats = whiteSeats.slice(0, 12);
-    // 하단 24석 (2줄)
     const bottomSeats = whiteSeats.slice(12, 36);
 
     return (

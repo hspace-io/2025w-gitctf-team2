@@ -105,7 +105,7 @@ const AdminPanel = () => {
                   {loading ? '처리 중...' : '만료된 예약 정리'}
                 </button>
               </div>
-              
+
               <div className="bg-surface-2 border border-night rounded-xl p-4">
                 <h3 className="font-semibold text-night-heading mb-2">좌석 현황</h3>
                 <p className="text-sm text-night-muted mb-3">

@@ -1,13 +1,6 @@
 import dotenv from 'dotenv';
-import fs from 'fs';
-import path from 'path';
 
-const envPath = path.join(__dirname, '../../.env');
-if (fs.existsSync(envPath)) {
-  dotenv.config({ path: envPath });
-} else {
-  dotenv.config();
-}
+dotenv.config();
 
 interface EnvConfig {
   MONGODB_URI: string;
@@ -22,13 +15,6 @@ const requiredEnvVars = ['MONGODB_URI', 'JWT_SECRET'];
 export const validateEnv = (): EnvConfig => {
   const missingVars: string[] = [];
 
-  if (!process.env.MONGODB_URI) {
-    process.env.MONGODB_URI = 'mongodb://localhost:27017/frontier_ctf';
-  }
-  if (!process.env.JWT_SECRET) {
-    process.env.JWT_SECRET = 'ctf_jwt_secret_for_testing_purposes_only';
-  }
-  
   for (const varName of requiredEnvVars) {
     if (!process.env[varName]) {
       missingVars.push(varName);
@@ -87,7 +73,7 @@ export const validateEnv = (): EnvConfig => {
   return {
     MONGODB_URI: process.env.MONGODB_URI!,
     JWT_SECRET: process.env.JWT_SECRET!,
-    PORT: parseInt(process.env.PORT || '5000', 10),
+    PORT: parseInt(process.env.PORT || '3000', 10),
     NODE_ENV: nodeEnv,
     ALLOWED_ORIGINS: process.env.ALLOWED_ORIGINS,
   };
@@ -97,9 +83,8 @@ export const getEnvConfig = (): EnvConfig => {
   return {
     MONGODB_URI: process.env.MONGODB_URI!,
     JWT_SECRET: process.env.JWT_SECRET!,
-    PORT: parseInt(process.env.PORT || '5000', 10),
+    PORT: parseInt(process.env.PORT || '3000', 10),
     NODE_ENV: process.env.NODE_ENV || 'development',
     ALLOWED_ORIGINS: process.env.ALLOWED_ORIGINS,
   };
 };
-

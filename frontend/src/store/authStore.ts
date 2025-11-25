@@ -70,7 +70,7 @@ let applicationListener: ((notification: any) => void) | null = null;
 let approvalListener: ((notification: any) => void) | null = null;
 
 function setupNotificationListener() {
-  console.log('üîî Setting up notification listeners...');
+  console.log('?îî Setting up notification listeners...');
   console.log('Socket connected:', socketService.isConnected());
   
   if (applicationListener) {
@@ -81,27 +81,27 @@ function setupNotificationListener() {
   }
 
   applicationListener = (notification: any) => {
-    console.log('üì® [Frontend] Received recruit application notification:', notification);
+    console.log('?ì® [Frontend] Received recruit application notification:', notification);
     try {
       useNotificationStore.getState().addNotification(notification);
-      console.log('‚úÖ Notification added to store');
+      console.log('??Notification added to store');
     } catch (error) {
-      console.error('‚ùå Error adding notification:', error);
+      console.error('??Error adding notification:', error);
     }
   };
 
   approvalListener = (notification: any) => {
-    console.log('üì® [Frontend] Received recruit approval notification:', notification);
+    console.log('?ì® [Frontend] Received recruit approval notification:', notification);
     try {
       useNotificationStore.getState().addNotification(notification);
-      console.log('‚úÖ Notification added to store');
+      console.log('??Notification added to store');
     } catch (error) {
-      console.error('‚ùå Error adding notification:', error);
+      console.error('??Error adding notification:', error);
     }
   };
 
   socketService.onRecruitApplication(applicationListener);
   socketService.onRecruitApproval(approvalListener);
-  console.log('‚úÖ Notification listeners registered');
+  console.log('??Notification listeners registered');
 }
 

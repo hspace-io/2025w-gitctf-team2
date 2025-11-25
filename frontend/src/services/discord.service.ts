@@ -5,7 +5,7 @@ export interface DiscordMessage {
   messageId: string;
   channelId: string;
   channelName: string;
-  threadName?: string;
+  threadName?: string; 
   content: string;
   author: {
     username: string;

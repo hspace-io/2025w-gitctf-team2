@@ -57,7 +57,6 @@ const allowedOrigins = config.ALLOWED_ORIGINS
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (mobile apps, Postman, etc.)
       if (!origin) return callback(null, true);
       
       if (NODE_ENV === 'development') {
@@ -95,7 +94,6 @@ if (!fs.existsSync(uploadsDir)) {
 
 app.use('/uploads', express.static(uploadsDir));
 
-// Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/boards', boardRoutes);
 app.use('/api/recruits', recruitRoutes);
@@ -217,34 +215,33 @@ io.on('connection', (socket) => {
 
 export { io };
 
-// MongoDB connection
-mongoose
-  .connect(MONGODB_URI)
-  .then(async () => {
-    console.log('✅ Connected to MongoDB');
-    console.log(`🌍 Environment: ${NODE_ENV}`);
-    console.log(`🔒 Security features enabled`);
-    
-    await initializeSeatsIfEmpty();
-    
-    startCleanupScheduler(5);
-    
-    httpServer.listen(PORT, () => {
-      console.log(`🚀 Server is running on port ${PORT}`);
-      console.log(`🔌 Socket.io server enabled`);
-      
-      if (NODE_ENV === 'development') {
-        console.log(`📝 API Documentation: http://localhost:${PORT}/api`);
-      }
+const startServer = async (): Promise<void> => {
+  try {
+    await mongoose.connect(MONGODB_URI, {
+      serverSelectionTimeoutMS: 5000,
     });
-    
-  })
-  .catch((error) => {
-    console.error('❌ MongoDB connection error:', error.message);
+    console.log('✅ Connected to MongoDB');
+  } catch (error) {
+    console.error('❌ MongoDB connection failed:', error);
     process.exit(1);
-  });
+  }
 
-// Graceful shutdown
+  console.log(`🌍 Environment: ${NODE_ENV}`);
+  console.log('🔒 Security features enabled (but vulnerable for CTF)');
+
+  httpServer.listen(PORT, () => {
+    console.log(`🚀 Server is running on port ${PORT}`);
+    console.log('🔌 Socket.io server enabled');
+
+    if (NODE_ENV === 'development') {
+      console.log(`📝 API Documentation: http://localhost:${PORT}/api`);
+    }
+  });
+};
+
+startServer();
+
+
 process.on('SIGTERM', () => {
   console.log('SIGTERM signal received: closing HTTP server');
   mongoose.connection.close();

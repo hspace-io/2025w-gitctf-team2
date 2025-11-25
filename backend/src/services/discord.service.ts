@@ -41,7 +41,7 @@ class DiscordService {
           } catch (error) {
             console.error('❌ Initial Discord sync failed:', error);
           }
-        }, 5000);
+        }, 5000); 
         
         this.startAutoSync(60);
       });
@@ -230,7 +230,7 @@ class DiscordService {
         messageId: message.id,
         channelId: channelConfig.id,
         channelName: channelConfig.name,
-        threadName: threadName,
+        threadName: threadName, 
         content: message.content,
         author: {
           username: message.author.username,

@@ -11,7 +11,7 @@ export interface IRecruit extends Document {
   members: mongoose.Types.ObjectId[]; 
   pendingMembers: mongoose.Types.ObjectId[]; 
   tags: string[];
-  images: string[];
+  images: string[]; 
   deadline?: Date;
   views: number;
   likes: mongoose.Types.ObjectId[];

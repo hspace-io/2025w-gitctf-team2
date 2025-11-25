@@ -1,5 +1,6 @@
 import Seat from '../models/Seat';
 
+// 만료된 좌석 예약을 자동으로 정리하는 함수
 export const cleanupExpiredReservations = async () => {
   try {
     const now = new Date();
@@ -29,7 +30,9 @@ export const cleanupExpiredReservations = async () => {
   }
 };
 
+// 정리 작업을 주기적으로 실행하는 인터벌 시작
 export const startCleanupScheduler = (intervalMinutes: number = 5) => {
+
   cleanupExpiredReservations();
 
   const interval = setInterval(() => {

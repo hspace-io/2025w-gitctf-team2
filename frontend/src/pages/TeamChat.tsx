@@ -98,6 +98,7 @@ const TeamChat = () => {
 
     const messageContent = chatInput.trim();
     setChatInput(''); 
+
     try {
       setSendingChat(true);
       const newMessage = await recruitService.sendChatMessage(recruitId, messageContent);
@@ -174,7 +175,7 @@ const TeamChat = () => {
               const prevMessage = index > 0 ? chatMessages[index - 1] : null;
               const showAvatar = !prevMessage || prevMessage.author._id !== msg.author._id;
               const showTime = !prevMessage || 
-                new Date(msg.createdAt).getTime() - new Date(prevMessage.createdAt).getTime() > 300000;
+                new Date(msg.createdAt).getTime() - new Date(prevMessage.createdAt).getTime() > 300000; 
 
               return (
                 <div key={msg._id} className={`flex ${isMyMessage ? 'justify-end' : 'justify-start'} gap-2`}>

@@ -7,12 +7,14 @@ import { apiLimiter } from '../middleware/security';
 const router = express.Router();
 
 let openai: OpenAI | null = null;
-function getOpenAI(): OpenAI | null {
-  if (!process.env.OPENAI_API_KEY) {
-    return null;
-  }
+
+function getOpenAI(): OpenAI {
   if (!openai) {
-    openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) {
+      throw new Error('OPENAI_API_KEY environment variable is not set');
+    }
+    openai = new OpenAI({ apiKey });
   }
   return openai;
 }
@@ -129,16 +131,15 @@ router.post(
 
       const { message } = req.body;
 
-      const client = getOpenAI();
-      if (!client) {
-        res.status(503).json({
-          error: 'Chatbot service is not configured',
-          reply: '죄송합니다. 챗봇 서비스가 현재 비활성화되어 있습니다.',
+      if (!process.env.OPENAI_API_KEY) {
+        res.status(500).json({ 
+          error: 'OpenAI API key is not configured',
+          reply: '죄송합니다. 챗봇 서비스가 현재 설정되지 않았습니다. 관리자에게 문의해주세요.'
         });
         return;
       }
 
-      const completion = await client.chat.completions.create({
+      const completion = await getOpenAI().chat.completions.create({
         model: 'gpt-3.5-turbo',
         messages: [
           {

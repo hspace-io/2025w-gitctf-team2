@@ -71,11 +71,10 @@ router.post(
       const reservedUntil = new Date();
       reservedUntil.setHours(reservedUntil.getHours() + hours);
 
-      // Atomic operation: 좌석이 available일 때만 예약 (동시성 문제 해결)
       const seat = await Seat.findOneAndUpdate(
         {
           seatNumber,
-          isAvailable: true, // 반드시 available일 때만
+          isAvailable: true, 
         },
         {
           $set: {
@@ -85,7 +84,7 @@ router.post(
           },
         },
         {
-          new: true,
+          new: true, 
         }
       ).populate('currentUser', 'username');
 
@@ -138,7 +137,7 @@ router.post(
   async (req: AuthRequest, res: Response): Promise<void> => {
     try {
       const { seatNumber } = req.params;
-      
+
       const query: any = {
         seatNumber,
         isAvailable: false,
@@ -223,7 +222,7 @@ router.post(
         whiteSeats.push({
           seatNumber: `W${i.toString().padStart(2, '0')}`,
           room: 'white',
-          position: { x: 0, y: 0 }, // 실제 좌표는 프론트엔드에서 설정
+          position: { x: 0, y: 0 }, 
           isAvailable: true,
         });
       }

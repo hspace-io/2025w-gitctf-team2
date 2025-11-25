@@ -1,3 +1,4 @@
+
 export const escapeHtml = (text: string): string => {
   const map: { [key: string]: string } = {
     '&': '&amp;',
@@ -10,6 +11,7 @@ export const escapeHtml = (text: string): string => {
   
   return text.replace(/[&<>"'/]/g, (char) => map[char]);
 };
+
 
 export const isSafeUrl = (url: string): boolean => {
   const allowedProtocols = ['http:', 'https:', 'mailto:'];
@@ -27,6 +29,7 @@ export const isValidFileName = (fileName: string): boolean => {
   return !dangerousChars.test(fileName);
 };
 
+
 export const validateLength = (
   text: string,
   min: number,
@@ -35,15 +38,18 @@ export const validateLength = (
   return text.length >= min && text.length <= max;
 };
 
+
 export const isValidEmail = (email: string): boolean => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
 };
 
+
 export const isValidUsername = (username: string): boolean => {
   const usernameRegex = /^[a-zA-Z0-9_-]{3,20}$/;
   return usernameRegex.test(username);
 };
+
 
 export const validatePasswordStrength = (password: string): {
   isValid: boolean;
@@ -82,6 +88,7 @@ export const validatePasswordStrength = (password: string): {
     message: '강력한 비밀번호입니다.',
   };
 };
+
 
 export const sanitizeContent = (content: string): string => {
   let sanitized = content.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');

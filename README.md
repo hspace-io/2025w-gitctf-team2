@@ -11,9 +11,6 @@ docker build -t frontier-ctf:latest .
 docker run -d --name frontier-ctf-app -p 5000:5000 frontier-ctf:latest
 ```
 
-> ℹ️ 루트 디렉터리에 `.env` 파일을 둔 상태에서 빌드하면 이미지에 자동으로 포함됩니다.  
-> 파일이 없다면 `MONGODB_URI`와 `JWT_SECRET`은 안전한 기본값으로 채워지고, `OPENAI_API_KEY`가 비어 있을 경우 챗봇 기능만 비활성화됩니다.
-
 ### 2. 웹사이트 접속
 
 http://localhost:5000 에서 시작하세요.

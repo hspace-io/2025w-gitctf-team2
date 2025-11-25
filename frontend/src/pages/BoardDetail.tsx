@@ -140,7 +140,6 @@ const BoardDetail = () => {
       </div>
 
       <div className="card bg-surface-2 border border-night shadow-card overflow-hidden">
-        {/* 헤더 */}
         <div className="px-6 py-5 border-b border-night bg-surface">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm text-night-muted">

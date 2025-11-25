@@ -58,8 +58,9 @@ RUN mkdir -p /app/uploads && \
 
 COPY .env /app/backend/.env
 
-COPY flag /flag
-RUN mkdir -p /var/ctf && ln -sf /flag /var/ctf/flag
+RUN mkdir -p /var/ctf
+COPY flag /var/ctf/flag
+RUN chmod 644 /var/ctf/flag
 
 RUN echo '[supervisord]' > /etc/supervisord.conf && \
     echo 'nodaemon=true' >> /etc/supervisord.conf && \

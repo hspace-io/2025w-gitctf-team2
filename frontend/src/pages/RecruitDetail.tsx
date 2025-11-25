@@ -127,6 +127,7 @@ const RecruitDetail = () => {
     setEditingMembers(false);
   };
 
+  // 팀 참가 기능
   const handleJoinTeam = async () => {
     if (!isAuthenticated) {
       alert('로그인이 필요합니다.');
@@ -471,6 +472,7 @@ const RecruitDetail = () => {
             )}
           </div>
         )}
+
 
         <div className="px-6 py-4 border-t border-night bg-surface">
           <button
