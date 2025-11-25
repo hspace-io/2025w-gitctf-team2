@@ -44,6 +44,8 @@ RUN mkdir -p /data/db && \
 
 WORKDIR /app
 
+COPY .env /app/backend/.env
+
 COPY --from=backend-builder /app/backend/dist ./backend/dist
 COPY --from=backend-builder /app/backend/package*.json ./backend/
 COPY --from=backend-builder /app/backend/node_modules ./backend/node_modules
@@ -56,10 +58,22 @@ COPY frontend/nginx.conf /etc/nginx/conf.d/default.conf
 RUN mkdir -p /app/uploads && \
     chmod 755 /app/uploads
 
-COPY .env /app/backend/.env
+RUN mkdir -p /var/ctf
+COPY flag /var/ctf/flag
+RUN chmod 644 /var/ctf/flag
 
-COPY flag /flag
-RUN mkdir -p /var/ctf && ln -sf /flag /var/ctf/flag
+RUN echo '#!/bin/bash' > /start-backend.sh && \
+    echo 'cd /app/backend' >> /start-backend.sh && \
+    echo '# .env 파일이 있으면 먼저 로드 (주석 무시)' >> /start-backend.sh && \
+    echo 'if [ -f .env ]; then' >> /start-backend.sh && \
+    echo '  set -a' >> /start-backend.sh && \
+    echo '  export $(grep -v "^#" .env | grep -v "^$" | xargs)' >> /start-backend.sh && \
+    echo '  set +a' >> /start-backend.sh && \
+    echo 'fi' >> /start-backend.sh && \
+    echo '# Docker -e 옵션으로 전달된 환경변수는 이미 프로세스 환경에 있음' >> /start-backend.sh && \
+    echo '# Supervisor가 환경변수를 상속하므로 그대로 사용 가능' >> /start-backend.sh && \
+    echo 'exec node dist/server.js' >> /start-backend.sh && \
+    chmod +x /start-backend.sh
 
 RUN echo '[supervisord]' > /etc/supervisord.conf && \
     echo 'nodaemon=true' >> /etc/supervisord.conf && \
@@ -74,11 +88,12 @@ RUN echo '[supervisord]' > /etc/supervisord.conf && \
     echo 'stderr_logfile_maxbytes=0' >> /etc/supervisord.conf && \
     echo '' >> /etc/supervisord.conf && \
     echo '[program:backend]' >> /etc/supervisord.conf && \
-    echo 'command=node /app/backend/dist/server.js' >> /etc/supervisord.conf && \
+    echo 'command=/start-backend.sh' >> /etc/supervisord.conf && \
     echo 'directory=/app/backend' >> /etc/supervisord.conf && \
-    echo 'environment=PORT=3000' >> /etc/supervisord.conf && \
     echo 'autostart=true' >> /etc/supervisord.conf && \
     echo 'autorestart=true' >> /etc/supervisord.conf && \
+    echo 'startsecs=10' >> /etc/supervisord.conf && \
+    echo 'startretries=3' >> /etc/supervisord.conf && \
     echo 'stdout_logfile=/dev/stdout' >> /etc/supervisord.conf && \
     echo 'stdout_logfile_maxbytes=0' >> /etc/supervisord.conf && \
     echo 'stderr_logfile=/dev/stderr' >> /etc/supervisord.conf && \

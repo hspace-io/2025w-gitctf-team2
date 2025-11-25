@@ -24,6 +24,7 @@ function App() {
   const { checkAuth } = useAuthStore();
 
   useEffect(() => {
+  
     checkAuth();
   }, [checkAuth]);
   return (
@@ -36,6 +37,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           
+         
           <Route path="/boards" element={<BoardList />} />
           <Route path="/boards/:id" element={<BoardDetail />} />
           <Route
@@ -55,6 +57,7 @@ function App() {
             }
           />
 
+        
           <Route path="/recruits" element={<RecruitList />} />
           <Route path="/recruits/:id" element={<RecruitDetail />} />
           <Route
@@ -74,12 +77,16 @@ function App() {
             }
           />
 
+      
           <Route path="/seats" element={<Seats />} />
 
+       
           <Route path="/chatbot" element={<Chatbot />} />
 
+          
           <Route path="/announcements" element={<Announcements />} />
 
+       
           <Route
             path="/chats"
             element={
@@ -97,6 +104,7 @@ function App() {
             }
           />
 
+        
           <Route
             path="/admin"
             element={

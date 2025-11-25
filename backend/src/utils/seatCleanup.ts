@@ -1,5 +1,6 @@
 import Seat from '../models/Seat';
 
+
 export const cleanupExpiredReservations = async () => {
   try {
     const now = new Date();
@@ -29,9 +30,12 @@ export const cleanupExpiredReservations = async () => {
   }
 };
 
+
 export const startCleanupScheduler = (intervalMinutes: number = 5) => {
+  
   cleanupExpiredReservations();
 
+  
   const interval = setInterval(() => {
     cleanupExpiredReservations();
   }, intervalMinutes * 60 * 1000);

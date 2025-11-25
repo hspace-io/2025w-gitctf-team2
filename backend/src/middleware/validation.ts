@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import mongoose from 'mongoose';
 
+
 export const validateObjectId = (paramName: string = 'id') => {
   return (req: Request, res: Response, next: NextFunction): void => {
     const id = req.params[paramName];
@@ -18,6 +19,7 @@ export const validateObjectId = (paramName: string = 'id') => {
     next();
   };
 };
+
 
 export const validateObjectIds = (...paramNames: string[]) => {
   return (req: Request, res: Response, next: NextFunction): void => {

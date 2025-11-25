@@ -23,6 +23,7 @@ import { startCleanupScheduler } from './utils/seatCleanup';
 import { initializeSeatsIfEmpty } from './utils/initializeSeats';
 import discordService from './services/discord.service';
 
+
 const config = validateEnv();
 
 const app = express();
@@ -30,7 +31,10 @@ const PORT = config.PORT;
 const MONGODB_URI = config.MONGODB_URI;
 const NODE_ENV = config.NODE_ENV;
 
+
 app.set('trust proxy', 1);
+
+
 
 app.use(
   helmet({
@@ -50,6 +54,7 @@ app.use(
   })
 );
 
+
 const allowedOrigins = config.ALLOWED_ORIGINS
   ? config.ALLOWED_ORIGINS.split(',').map(origin => origin.trim())
   : ['http://localhost:5173', 'http://localhost:3000', 'http://localhost', 'http://localhost:5000'];
@@ -57,7 +62,7 @@ const allowedOrigins = config.ALLOWED_ORIGINS
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (mobile apps, Postman, etc.)
+      
       if (!origin) return callback(null, true);
       
       if (NODE_ENV === 'development') {
@@ -75,27 +80,35 @@ app.use(
   })
 );
 
+
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+
 app.use(mongoSanitize());
+
 
 app.use(xss());
 
+
 app.use(limitContentSize);
+
 
 app.use(sanitizeInput);
 
+
 app.use('/api/', apiLimiter);
+
 
 const uploadsDir = path.join(__dirname, '../uploads');
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
+
 app.use('/uploads', express.static(uploadsDir));
 
-// Routes
+
 app.use('/api/auth', authRoutes);
 app.use('/api/boards', boardRoutes);
 app.use('/api/recruits', recruitRoutes);
@@ -104,12 +117,15 @@ app.use('/api/chatbot', chatbotRoutes);
 app.use('/api/discord', discordRoutes);
 app.use('/api/upload', uploadRoutes);
 
+
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Server is running' });
 });
 
+
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error('Error:', err.message);
+  
   
   if (NODE_ENV === 'production') {
     res.status(err.status || 500).json({
@@ -123,11 +139,14 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
   }
 });
 
+
 app.use((req: express.Request, res: express.Response) => {
   res.status(404).json({ error: 'Not Found' });
 });
 
+
 const httpServer = createServer(app);
+
 
 const io = new Server(httpServer, {
   cors: {
@@ -135,6 +154,7 @@ const io = new Server(httpServer, {
     credentials: true,
   },
 });
+
 
 io.use((socket, next) => {
   const token = socket.handshake.auth.token;
@@ -157,16 +177,20 @@ io.use((socket, next) => {
   }
 });
 
+
 io.on('connection', (socket) => {
   console.log(`✅ Socket connected: ${socket.id} (User: ${socket.data.userId})`);
 
+  
   socket.on('join-team-chat', async (recruitId: string) => {
     try {
+      
       if (typeof recruitId !== 'string' || recruitId.length > 50 || !/^[a-f0-9]{24}$/i.test(recruitId)) {
         socket.emit('error', { message: 'Invalid recruit ID' });
         return;
       }
 
+      
       const recruit = await Recruit.findById(recruitId)
         .populate('members', '_id')
         .populate('author', '_id');
@@ -178,6 +202,7 @@ io.on('connection', (socket) => {
 
       const userIdStr = socket.data.userId;
       const isAuthor = recruit.author.toString() === userIdStr;
+      
       const isMember = recruit.members.some((member: any) => {
         const memberId = member._id ? member._id.toString() : member.toString();
         return memberId === userIdStr;
@@ -196,7 +221,9 @@ io.on('connection', (socket) => {
     }
   });
 
+  
   socket.on('leave-team-chat', (recruitId: string) => {
+    
     if (typeof recruitId !== 'string' || recruitId.length > 50) {
       return;
     }
@@ -204,20 +231,23 @@ io.on('connection', (socket) => {
     console.log(`User ${socket.data.userId} left team-${recruitId}`);
   });
 
+  
   const userId = socket.data.userId;
   if (userId) {
     socket.join(`user-${userId}`);
     console.log(`User ${userId} joined notification room: user-${userId}`);
   }
 
+  
   socket.on('disconnect', () => {
     console.log(`❌ Socket disconnected: ${socket.id}`);
   });
 });
 
+
 export { io };
 
-// MongoDB connection
+
 mongoose
   .connect(MONGODB_URI)
   .then(async () => {
@@ -225,9 +255,12 @@ mongoose
     console.log(`🌍 Environment: ${NODE_ENV}`);
     console.log(`🔒 Security features enabled`);
     
+    
     await initializeSeatsIfEmpty();
     
+    
     startCleanupScheduler(5);
+    
     
     httpServer.listen(PORT, () => {
       console.log(`🚀 Server is running on port ${PORT}`);
@@ -238,13 +271,15 @@ mongoose
       }
     });
     
+    
+    
   })
   .catch((error) => {
     console.error('❌ MongoDB connection error:', error.message);
     process.exit(1);
   });
 
-// Graceful shutdown
+
 process.on('SIGTERM', () => {
   console.log('SIGTERM signal received: closing HTTP server');
   mongoose.connection.close();

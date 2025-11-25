@@ -61,6 +61,7 @@ const AdminPanel = () => {
         <h1 className="text-3xl font-bold text-night-heading mb-8">관리자 패널</h1>
 
         <div className="space-y-6">
+       
           <div className="card p-6">
             <h2 className="text-xl font-bold text-night-heading mb-4">공지사항 관리</h2>
             <p className="text-night-muted mb-4">
@@ -74,10 +75,12 @@ const AdminPanel = () => {
             </button>
           </div>
 
+     
           <div className="card p-6">
             <h2 className="text-xl font-bold text-night-heading mb-4">좌석 관리</h2>
 
             <div className="space-y-4">
+          
               <div className="bg-surface-2 border border-night rounded-xl p-4">
                 <h3 className="font-semibold text-night-heading mb-2">좌석 초기화</h3>
                 <p className="text-sm text-night-muted mb-3">
@@ -92,6 +95,7 @@ const AdminPanel = () => {
                 </button>
               </div>
 
+              
               <div className="bg-surface-2 border border-night rounded-xl p-4">
                 <h3 className="font-semibold text-night-heading mb-2">만료된 예약 정리</h3>
                 <p className="text-sm text-night-muted mb-3">
@@ -105,7 +109,8 @@ const AdminPanel = () => {
                   {loading ? '처리 중...' : '만료된 예약 정리'}
                 </button>
               </div>
-              
+
+          
               <div className="bg-surface-2 border border-night rounded-xl p-4">
                 <h3 className="font-semibold text-night-heading mb-2">좌석 현황</h3>
                 <p className="text-sm text-night-muted mb-3">
@@ -121,6 +126,7 @@ const AdminPanel = () => {
             </div>
           </div>
 
+       
           <div className="card p-6">
             <h2 className="text-xl font-bold text-night-heading mb-4">시스템 정보</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -142,6 +148,7 @@ const AdminPanel = () => {
             </div>
           </div>
 
+        
           <div className="card p-6">
             <h3 className="text-xl font-bold text-night-heading mb-4">관리자 권한</h3>
             <ul className="list-disc list-inside space-y-2 text-night-muted">

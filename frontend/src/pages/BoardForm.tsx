@@ -48,6 +48,7 @@ const BoardForm = () => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
+    
     if ((formData.images?.length || 0) + files.length > 5) {
       alert('이미지는 최대 5개까지 업로드할 수 있습니다.');
       return;
@@ -75,7 +76,7 @@ const BoardForm = () => {
       alert(error.response?.data?.error || '이미지 업로드에 실패했습니다.');
     } finally {
       setUploading(false);
-      // Reset input
+    
       e.target.value = '';
     }
   };
@@ -198,6 +199,7 @@ const BoardForm = () => {
             </p>
           </div>
 
+        
           <div>
             <label className="block text-sm font-medium text-night mb-2">
               이미지 (최대 5개, 각 5MB 이하)
@@ -214,6 +216,7 @@ const BoardForm = () => {
               <p className="text-sm text-night-muted mt-2">업로드 중...</p>
             )}
 
+           
             {formData.images && formData.images.length > 0 && (
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
                 {formData.images.map((image, index) => (

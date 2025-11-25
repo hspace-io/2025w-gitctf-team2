@@ -5,6 +5,7 @@ import { authenticateToken, AuthRequest, isAdmin } from '../middleware/auth';
 
 const router = express.Router();
 
+
 router.get('/status', async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const isConnected = discordService.isConnected();
@@ -19,6 +20,7 @@ router.get('/status', async (req: AuthRequest, res: Response): Promise<void> => 
     res.status(500).json({ error: 'Server error' });
   }
 });
+
 
 router.get(
   '/announcements',
@@ -45,6 +47,7 @@ router.get(
   }
 );
 
+
 router.get(
   '/missions',
   [query('limit').optional().isInt({ min: 1, max: 50 }).toInt()],
@@ -69,6 +72,7 @@ router.get(
     }
   }
 );
+
 
 router.post(
   '/sync',

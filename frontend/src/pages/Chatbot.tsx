@@ -105,7 +105,7 @@ const Chatbot = () => {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-        {/* 헤더 */}
+       
         <div className="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-4">
           <h1 className="text-2xl font-bold text-white flex items-center gap-2">
             <span>🤖</span>
@@ -116,6 +116,7 @@ const Chatbot = () => {
           </p>
         </div>
 
+       
         <div className="h-[500px] overflow-y-auto p-6 bg-gray-50">
           <div className="space-y-4">
             {messages.map((message, index) => (
@@ -173,7 +174,7 @@ const Chatbot = () => {
           </div>
         )}
 
-        {/* 입력 영역 */}
+     
         <div className="p-4 bg-white border-t border-gray-200">
           <div className="flex gap-2">
             <input
@@ -200,6 +201,7 @@ const Chatbot = () => {
         </div>
       </div>
 
+    
       <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
         <h3 className="font-semibold text-blue-900 mb-2">💡 사용 팁</h3>
         <ul className="text-sm text-blue-700 space-y-1">

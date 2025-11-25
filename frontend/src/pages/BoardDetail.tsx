@@ -140,7 +140,7 @@ const BoardDetail = () => {
       </div>
 
       <div className="card bg-surface-2 border border-night shadow-card overflow-hidden">
-        {/* 헤더 */}
+      
         <div className="px-6 py-5 border-b border-night bg-surface">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm text-night-muted">
@@ -178,6 +178,7 @@ const BoardDetail = () => {
           </div>
         </div>
 
+   
         <div className="px-6 py-10 bg-surface">
           <div className="prose prose-invert max-w-none text-night leading-relaxed">
             <ReactMarkdown remarkPlugins={[remarkGfm]}>
@@ -185,6 +186,7 @@ const BoardDetail = () => {
             </ReactMarkdown>
           </div>
 
+          
           {board.images && board.images.length > 0 && (
             <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
               {board.images.map((image, index) => (
@@ -200,6 +202,7 @@ const BoardDetail = () => {
           )}
         </div>
 
+      
         <div className="px-6 py-6 border-t border-night bg-surface">
           <button
             onClick={handleLike}
@@ -211,6 +214,7 @@ const BoardDetail = () => {
           </button>
         </div>
 
+       
         <div className="px-6 py-6 border-t border-night bg-surface">
           <h3 className="text-xl font-semibold mb-6 text-night-heading">
             댓글 {board.comments.length}

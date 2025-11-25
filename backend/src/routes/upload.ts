@@ -7,6 +7,7 @@ import FileModel from '../models/File';
 
 const router = express.Router();
 
+
 router.post(
   '/',
   authenticateToken,
@@ -28,11 +29,12 @@ router.post(
 const files = req.files as Express.Multer.File[];
       const savedFiles = [];
 
+      
       for (const file of files) {
         const newFile = new FileModel({
           filename: file.filename,
           originalName: file.originalname,
-          uploader: req.userId,
+          uploader: req.userId, 
           size: file.size,
           mimetype: file.mimetype,
         });
@@ -51,6 +53,7 @@ const files = req.files as Express.Multer.File[];
   }
 );
 
+
 router.delete(
   '/:filename',
   authenticateToken,
@@ -58,36 +61,44 @@ router.delete(
 try {
       let { filename } = req.params;
 
+      
+      
+      
       if (!filename || filename.length > 255) {
         res.status(400).json({ error: 'Invalid filename: length exceeded' });
         return;
       }
 
+      
       try {
         const decoded = decodeURIComponent(filename);
         if (decoded !== filename) {
+          
           filename = decoded;
         }
       } catch (e) {
+        
       }
 
+      
       if (filename.includes('\0') || filename.includes('%00')) {
         console.warn(`[SECURITY] Null byte attack detected: ${filename}`);
         res.status(400).json({ error: 'Invalid filename: null byte detected' });
         return;
       }
 
+      
       const pathTraversalPatterns = [
-        '..',        
-        '/',           
-        '\\',          
-        '\u2215',     
-        '\u2216',       
-        '\uff0f',     
-        '\uff3c',      
-        '%2e',         
-        '%2f',          
-        '%5c',       
+        '..',           
+        '/',            
+        '\\',           // 백슬래시
+        '\u2215',       // 유니코드 슬래시 (∕)
+        '\u2216',       // 유니코드 백슬래시
+        '\uff0f',       // 전각 슬래시 (／)
+        '\uff3c',       // 전각 백슬래시 (＼)
+        '%2e',          // URL 인코딩된 점
+        '%2f',          // URL 인코딩된 슬래시
+        '%5c',         
       ];
 
       for (const pattern of pathTraversalPatterns) {
@@ -99,26 +110,26 @@ try {
       }
 
       const blockedPatterns = [
-        /^\.env/i,                  
-        /^package\.json$/i,           
-        /^package-lock\.json$/i,   
+        /^\.env/i,                   
+        /^package\.json$/i,         
+        /^package-lock\.json$/i,     
         /^docker-compose/i,          
-        /^dockerfile$/i,             
+        /^dockerfile$/i,            
         /^tsconfig/i,                
         /^\.git/i,                   
-        /^node_modules/i,           
+        /^node_modules/i,            
         /^src\//i,                   
-        /^dist\//i,                 
-        /^config/i,                  
-        /^\.dockerignore$/i,        
-        /^\.npmrc$/i,               
-        /^yarn\.lock$/i,             
-        /^\.eslintrc/i,             
-        /^\.prettierrc/i,            
-        /^webpack\.config/i,          
-        /^vite\.config/i,           
-        /^\.vscode/i,               
-        /^\.idea/i,                   
+        /^dist\//i,                  
+        /^config/i,                   
+        /^\.dockerignore$/i,         
+        /^\.npmrc$/i,             
+        /^yarn\.lock$/i,              
+        /^\.eslintrc/i,              
+        /^\.prettierrc/i,          
+        /^webpack\.config/i,         
+        /^vite\.config/i,            
+        /^\.vscode/i,                
+        /^\.idea/i,                  
       ];
 
       for (const pattern of blockedPatterns) {

@@ -33,6 +33,7 @@ class DiscordService {
         this.loadChannels();
         this.setupMessageListener();
         
+        
         setTimeout(async () => {
           try {
             console.log('🔄 Starting initial Discord sync...');
@@ -41,7 +42,8 @@ class DiscordService {
           } catch (error) {
             console.error('❌ Initial Discord sync failed:', error);
           }
-        }, 5000);
+        }, 5000); 
+        
         
         this.startAutoSync(60);
       });
@@ -61,6 +63,7 @@ class DiscordService {
   private loadChannels() {
     if (!this.client || !this.isReady) return;
 
+    
     const missionChannelId = process.env.DISCORD_MISSION_CHANNEL;
 
     if (missionChannelId) {
@@ -75,10 +78,12 @@ class DiscordService {
   private setupMessageListener() {
     if (!this.client) return;
 
+    
     this.client.on('threadCreate', async (thread) => {
       for (const [type, channelConfig] of this.channels.entries()) {
         if (thread.parentId === channelConfig.id) {
           console.log(`📝 New forum post created: ${thread.name}`);
+          
           
           const starterMessage = await thread.fetchStarterMessage().catch(() => null);
           if (starterMessage && !starterMessage.author.bot) {
@@ -89,11 +94,14 @@ class DiscordService {
       }
     });
 
+    
     this.client.on('messageUpdate', async (oldMessage, newMessage) => {
       if (newMessage.author?.bot) return;
 
+      
       if (newMessage.channel.isThread()) {
         const thread = newMessage.channel as ThreadChannel;
+        
         
         const starterMessage = await thread.fetchStarterMessage().catch(() => null);
         if (starterMessage && starterMessage.id === newMessage.id) {
@@ -108,6 +116,7 @@ class DiscordService {
       }
     });
 
+    
     this.client.on('messageDelete', async (message) => {
       try {
         const deleted = await DiscordMessage.findOneAndDelete({ messageId: message.id });
@@ -119,8 +128,10 @@ class DiscordService {
       }
     });
 
+    
     this.client.on('threadDelete', async (thread) => {
       try {
+        
         const starterMessage = await thread.fetchStarterMessage().catch(() => null);
         if (starterMessage) {
           await DiscordMessage.findOneAndDelete({ messageId: starterMessage.id });
@@ -151,9 +162,11 @@ class DiscordService {
         throw new Error('Channel not found');
       }
 
+      
       if (channel.type === ChannelType.GuildForum) {
         return await this.fetchForumPosts(channel as ForumChannel, channelConfig, limit);
       }
+      
       
       if (channel.isTextBased()) {
         const messages = await (channel as TextChannel).messages.fetch({ limit });
@@ -179,12 +192,15 @@ class DiscordService {
     limit: number = 20
   ) {
     try {
+      
       const threads = await forumChannel.threads.fetchActive();
+      
       
       const archivedThreads = await forumChannel.threads.fetchArchived({ limit }).catch(() => {
         console.log('⚠️ Could not fetch archived threads (permission issue or none exist)');
         return { threads: new Collection() };
       });
+      
       
       const allThreads = new Collection([...threads.threads, ...archivedThreads.threads]);
       
@@ -193,6 +209,7 @@ class DiscordService {
       let count = 0;
 
       for (const thread of threadArray) {
+        
         const starterMessage = await (thread as any).fetchStarterMessage().catch(() => null);
         
         if (starterMessage) {
@@ -202,6 +219,7 @@ class DiscordService {
         }
       }
 
+      
       const deleteResult = await DiscordMessage.deleteMany({
         type: channelConfig.type,
         messageId: { $nin: validMessageIds }
@@ -221,6 +239,7 @@ class DiscordService {
 
   private async saveMessage(message: Message, channelConfig: { id: string; name: string; type: string }) {
     try {
+      
       let threadName: string | undefined;
       if (message.channel.isThread()) {
         threadName = (message.channel as ThreadChannel).name;
@@ -230,7 +249,7 @@ class DiscordService {
         messageId: message.id,
         channelId: channelConfig.id,
         channelName: channelConfig.name,
-        threadName: threadName,
+        threadName: threadName, 
         content: message.content,
         author: {
           username: message.author.username,
@@ -300,16 +319,19 @@ class DiscordService {
     return Array.from(this.channels.values());
   }
 
+  
   startAutoSync(intervalMinutes: number = 60) {
     if (!this.isReady) {
       console.warn('Discord bot is not ready. Auto-sync will not start.');
       return;
     }
 
+    
     this.syncMessages().catch((error) => {
       console.error('Initial sync failed:', error);
     });
 
+    
     setInterval(async () => {
       try {
         console.log('🔄 Starting automatic Discord sync...');
@@ -323,6 +345,7 @@ class DiscordService {
     console.log(`⏰ Discord auto-sync scheduled every ${intervalMinutes} minutes`);
   }
 }
+
 
 const discordService = new DiscordService();
 

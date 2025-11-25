@@ -24,9 +24,11 @@ export const useAuthStore = create<AuthState>((set) => ({
       const data = await authService.login({ email, password });
       set({ user: data.user, isAuthenticated: true, isLoading: false });
       
+      
       const token = authService.getToken();
       if (token) {
         socketService.connect(token, () => {
+          
           setupNotificationListener();
         });
       }
@@ -58,13 +60,16 @@ export const useAuthStore = create<AuthState>((set) => ({
     const token = authService.getToken();
     set({ user, isAuthenticated: !!token });
     
+    
     if (token) {
       socketService.connect(token, () => {
+        
         setupNotificationListener();
       });
     }
   },
 }));
+
 
 let applicationListener: ((notification: any) => void) | null = null;
 let approvalListener: ((notification: any) => void) | null = null;
@@ -73,6 +78,7 @@ function setupNotificationListener() {
   console.log('🔔 Setting up notification listeners...');
   console.log('Socket connected:', socketService.isConnected());
   
+  
   if (applicationListener) {
     socketService.offRecruitApplication(applicationListener);
   }
@@ -80,6 +86,7 @@ function setupNotificationListener() {
     socketService.offRecruitApproval(approvalListener);
   }
 
+  
   applicationListener = (notification: any) => {
     console.log('📨 [Frontend] Received recruit application notification:', notification);
     try {
@@ -90,6 +97,7 @@ function setupNotificationListener() {
     }
   };
 
+  
   approvalListener = (notification: any) => {
     console.log('📨 [Frontend] Received recruit approval notification:', notification);
     try {
@@ -100,6 +108,7 @@ function setupNotificationListener() {
     }
   };
 
+  
   socketService.onRecruitApplication(applicationListener);
   socketService.onRecruitApproval(approvalListener);
   console.log('✅ Notification listeners registered');

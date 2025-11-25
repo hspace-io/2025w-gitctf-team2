@@ -5,6 +5,7 @@ import { authenticateToken, AuthRequest } from '../middleware/auth';
 
 const router = express.Router();
 
+
 router.get('/', async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { room } = req.query;
@@ -25,6 +26,7 @@ router.get('/', async (req: AuthRequest, res: Response): Promise<void> => {
   }
 });
 
+
 router.post(
   '/:seatNumber/reserve',
   authenticateToken,
@@ -44,17 +46,20 @@ router.post(
       const { seatNumber } = req.params;
       const { hours } = req.body;
 
+      
       const seatInfo = await Seat.findOne({ seatNumber });
       if (!seatInfo) {
         res.status(404).json({ error: 'Seat not found' });
         return;
       }
 
+      
       if (seatInfo.room === 'staff' && req.userRole !== 'admin') {
         res.status(403).json({ error: 'STAFF ROOM은 관리자만 예약할 수 있습니다' });
         return;
       }
 
+      
       const existingReservation = await Seat.findOne({
         currentUser: req.userId,
         isAvailable: false,
@@ -68,14 +73,15 @@ router.post(
         return;
       }
 
+      
       const reservedUntil = new Date();
       reservedUntil.setHours(reservedUntil.getHours() + hours);
 
-      // Atomic operation: 좌석이 available일 때만 예약 (동시성 문제 해결)
+      
       const seat = await Seat.findOneAndUpdate(
         {
           seatNumber,
-          isAvailable: true, // 반드시 available일 때만
+          isAvailable: true, 
         },
         {
           $set: {
@@ -85,11 +91,13 @@ router.post(
           },
         },
         {
-          new: true,
+          new: true, 
         }
       ).populate('currentUser', 'username');
 
+      
       if (!seat) {
+        
         const seatExists = await Seat.findOne({ seatNumber });
         if (!seatExists) {
           res.status(404).json({ error: 'Seat not found' });
@@ -99,12 +107,14 @@ router.post(
         return;
       }
 
+      
       const allUserReservations = await Seat.countDocuments({
         currentUser: req.userId,
         isAvailable: false,
       });
 
       if (allUserReservations > 1) {
+        
         await Seat.findByIdAndUpdate(seat._id, {
           $set: {
             isAvailable: true,
@@ -132,18 +142,21 @@ router.post(
   }
 );
 
+
 router.post(
   '/:seatNumber/release',
   authenticateToken,
   async (req: AuthRequest, res: Response): Promise<void> => {
     try {
       const { seatNumber } = req.params;
+
       
       const query: any = {
         seatNumber,
         isAvailable: false,
       };
 
+      
       if (req.userRole !== 'admin') {
         query.currentUser = req.userId;
       }
@@ -165,6 +178,7 @@ router.post(
       );
 
       if (!seat) {
+        
         const seatExists = await Seat.findOne({ seatNumber });
         if (!seatExists) {
           res.status(404).json({ error: 'Seat not found' });
@@ -184,6 +198,7 @@ router.post(
     }
   }
 );
+
 
 router.get(
   '/my-reservation',
@@ -208,6 +223,7 @@ router.get(
   }
 );
 
+
 router.post(
   '/initialize',
   authenticateToken,
@@ -218,16 +234,18 @@ router.post(
         return;
       }
 
+      
       const whiteSeats = [];
       for (let i = 1; i <= 36; i++) {
         whiteSeats.push({
           seatNumber: `W${i.toString().padStart(2, '0')}`,
           room: 'white',
-          position: { x: 0, y: 0 }, // 실제 좌표는 프론트엔드에서 설정
+          position: { x: 0, y: 0 }, 
           isAvailable: true,
         });
       }
 
+      
       const staffSeats = [];
       for (let i = 1; i <= 12; i++) {
         staffSeats.push({
@@ -238,6 +256,7 @@ router.post(
         });
       }
 
+      
       await Seat.deleteMany({});
       await Seat.insertMany([...whiteSeats, ...staffSeats]);
 
@@ -251,6 +270,7 @@ router.post(
     }
   }
 );
+
 
 router.post(
   '/cleanup-expired',

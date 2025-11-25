@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+
 const API_URL = (import.meta as any).env?.VITE_API_URL || '/api';
 
 const api = axios.create({
@@ -8,6 +9,7 @@ const api = axios.create({
     'Content-Type': 'application/json',
   },
 });
+
 
 api.interceptors.request.use(
   (config) => {
@@ -21,6 +23,7 @@ api.interceptors.request.use(
     return Promise.reject(error);
   }
 );
+
 
 api.interceptors.response.use(
   (response) => response,

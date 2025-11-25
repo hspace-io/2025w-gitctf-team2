@@ -95,7 +95,6 @@ const FloatingChatbot = () => {
 
   return (
     <>
-      {/* 플로팅 챗봇 버튼 */}
       <button
         onClick={toggleChat}
         className="fixed bottom-6 right-6 w-16 h-16 night-gradient text-[#05070f] rounded-full shadow-neon flex items-center justify-center text-2xl transition-all duration-300 hover:scale-110 active:scale-95 z-50"
@@ -104,10 +103,9 @@ const FloatingChatbot = () => {
         {isOpen ? '✕' : '🤖'}
       </button>
 
-      {/* 챗봇 팝업 */}
       {isOpen && (
         <div className="fixed bottom-24 right-6 w-96 h-[600px] card flex flex-col z-50 animate-fade-up bg-surface-2 border border-night shadow-card">
-          {/* 헤더 */}
+       
           <div className="night-gradient px-5 py-4 rounded-t-2xl flex items-center justify-between">
             <div>
               <h3 className="text-white font-semibold flex items-center gap-2">
@@ -126,7 +124,7 @@ const FloatingChatbot = () => {
             </button>
           </div>
 
-          {/* 메시지 영역 */}
+       
           <div className="flex-1 overflow-y-auto p-5 bg-surface scrollbar-night">
             <div className="space-y-4">
               {messages.map((message, index) => (
@@ -167,7 +165,6 @@ const FloatingChatbot = () => {
             </div>
           </div>
 
-          {/* 빠른 질문 */}
           {messages.length <= 1 && (
             <div className="px-5 py-3 bg-surface border-t border-night">
               <p className="text-xs text-night-muted mb-2 font-medium">💡 빠른 질문:</p>
@@ -185,7 +182,7 @@ const FloatingChatbot = () => {
             </div>
           )}
 
-          {/* 입력 영역 */}
+         
           <div className="p-4 bg-surface border-t border-night rounded-b-2xl">
             {!isAuthenticated ? (
               <div className="text-center text-sm text-night-muted">

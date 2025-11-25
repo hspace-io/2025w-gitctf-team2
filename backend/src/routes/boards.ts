@@ -7,6 +7,7 @@ import { validateObjectId, validateObjectIds } from '../middleware/validation';
 
 const router = express.Router();
 
+
 router.get('/', async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { category, page = '1', limit = '20' } = req.query;
@@ -27,6 +28,7 @@ router.get('/', async (req: AuthRequest, res: Response): Promise<void> => {
       .skip(skip)
       .limit(limitNum);
 
+    
     const boardsWithAnonymous = boards.map((board) => {
       const boardObj = board.toObject();
       if (board.isAnonymous && boardObj.author && typeof boardObj.author === 'object' && !Array.isArray(boardObj.author)) {
@@ -53,6 +55,7 @@ router.get('/', async (req: AuthRequest, res: Response): Promise<void> => {
   }
 });
 
+
 router.get('/:id', async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const board = await Board.findById(req.params.id)
@@ -64,10 +67,12 @@ router.get('/:id', async (req: AuthRequest, res: Response): Promise<void> => {
       return;
     }
 
+    
     board.views += 1;
     await board.save();
 
     const boardObj = board.toObject();
+    
     
     if (board.isAnonymous && boardObj.author && typeof boardObj.author === 'object' && !Array.isArray(boardObj.author)) {
       boardObj.author = {
@@ -76,6 +81,7 @@ router.get('/:id', async (req: AuthRequest, res: Response): Promise<void> => {
       };
     }
 
+    
     boardObj.comments = boardObj.comments.map((comment: any) => {
       if (comment.isAnonymous && comment.author) {
         return {
@@ -95,6 +101,7 @@ router.get('/:id', async (req: AuthRequest, res: Response): Promise<void> => {
     res.status(500).json({ error: 'Server error' });
   }
 });
+
 
 router.post(
   '/',
@@ -120,6 +127,7 @@ router.post(
 
       const { title, content, category, isAnonymous, images } = req.body;
 
+      
       if (category === 'notice' && req.userRole !== 'admin') {
         res.status(403).json({ error: 'Only admins can create notices' });
         return;
@@ -156,6 +164,7 @@ router.post(
   }
 );
 
+
 router.put(
   '/:id',
   authenticateToken,
@@ -185,6 +194,7 @@ router.put(
         return;
       }
 
+      
       if (
         board.author.toString() !== req.userId &&
         req.userRole !== 'admin'
@@ -217,6 +227,7 @@ router.put(
   }
 );
 
+
 router.delete(
   '/:id',
   authenticateToken,
@@ -228,6 +239,7 @@ router.delete(
         return;
       }
 
+      
       if (
         board.author.toString() !== req.userId &&
         req.userRole !== 'admin'
@@ -244,6 +256,7 @@ router.delete(
     }
   }
 );
+
 
 router.post(
   '/:id/like',
@@ -262,8 +275,10 @@ router.post(
       );
 
       if (likeIndex > -1) {
+        
         board.likes.splice(likeIndex, 1);
       } else {
+        
         board.likes.push(userIdStr as any);
       }
 
@@ -279,6 +294,7 @@ router.post(
     }
   }
 );
+
 
 router.post(
   '/:id/comments',
@@ -332,6 +348,7 @@ router.post(
   }
 );
 
+
 router.delete(
   '/:boardId/comments/:commentId',
   authenticateToken,
@@ -349,6 +366,7 @@ router.delete(
         return;
       }
 
+      
       if (
         comment.author.toString() !== req.userId &&
         req.userRole !== 'admin'

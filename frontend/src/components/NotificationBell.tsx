@@ -9,6 +9,7 @@ const NotificationBell = () => {
   const { notifications, unreadCount, markAsRead, markAllAsRead, removeNotification } =
     useNotificationStore();
 
+  
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {

@@ -1,3 +1,4 @@
+
 export const escapeHtml = (text: string): string => {
   const map: { [key: string]: string } = {
     '&': '&amp;',
@@ -18,11 +19,13 @@ export const isSafeUrl = (url: string): boolean => {
     const urlObj = new URL(url);
     return allowedProtocols.includes(urlObj.protocol);
   } catch {
+    
     return !url.startsWith('javascript:') && !url.startsWith('data:');
   }
 };
 
 export const isValidFileName = (fileName: string): boolean => {
+  
   const dangerousChars = /[<>:"/\\|?*\x00-\x1F]/g;
   return !dangerousChars.test(fileName);
 };
@@ -84,10 +87,11 @@ export const validatePasswordStrength = (password: string): {
 };
 
 export const sanitizeContent = (content: string): string => {
+  
   let sanitized = content.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
-  
+
   sanitized = sanitized.replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '');
-  
+
   sanitized = sanitized.replace(/\s*on\w+\s*=\s*["'][^"']*["']/gi, '');
   
   return sanitized;

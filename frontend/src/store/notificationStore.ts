@@ -35,6 +35,7 @@ export const useNotificationStore = create<NotificationState>((set) => ({
     };
 
     set((state) => {
+      
       const isDuplicate = state.notifications.some(
         (n) =>
           n.type === notification.type &&

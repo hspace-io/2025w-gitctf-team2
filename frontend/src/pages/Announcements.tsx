@@ -65,12 +65,14 @@ const Announcements = () => {
       key={message._id}
       className="card bg-surface-2 border border-night p-6 hover:shadow-neon/30 transition-shadow"
     >
+    
       {message.threadName && (
         <h2 className="text-2xl font-bold text-night-heading mb-4 pb-3 border-b border-night">
           {message.threadName}
         </h2>
       )}
 
+     
       <div className="flex items-center mb-4">
         {message.author.avatar && (
           <img
@@ -85,6 +87,7 @@ const Announcements = () => {
         </div>
       </div>
 
+      
       {message.content && (
         <div className="max-w-none mb-4 leading-relaxed text-night prose prose-invert">
           <ReactMarkdown remarkPlugins={[remarkGfm]}>
@@ -93,6 +96,7 @@ const Announcements = () => {
         </div>
       )}
 
+    
       {message.embeds && message.embeds.length > 0 && (
         <div className="space-y-4">
           {message.embeds.map((embed, idx) => (
@@ -136,6 +140,7 @@ const Announcements = () => {
         </div>
       )}
 
+    
       {message.attachments && message.attachments.length > 0 && (
         <div className="mt-4 space-y-2">
           {message.attachments.map((attachment, idx) => (
@@ -177,7 +182,7 @@ const Announcements = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-night">
-      {/* 헤더 */}
+      
       <div className="mb-8">
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-3xl font-bold text-night-heading">
@@ -220,6 +225,7 @@ const Announcements = () => {
           )}
         </div>
 
+    
         <div className="flex items-center text-sm">
           <span
             className={`inline-block w-2 h-2 rounded-full mr-2 ${
@@ -234,6 +240,7 @@ const Announcements = () => {
         </div>
       </div>
 
+     
       {missions.length === 0 ? (
         <div className="text-center py-12">
           <p className="text-night-muted text-lg">아직 미션이 없습니다.</p>

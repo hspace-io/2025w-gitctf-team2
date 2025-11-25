@@ -35,7 +35,6 @@ const RecruitDetail = () => {
     }
   };
 
-
   const handleLike = async () => {
     if (!isAuthenticated) {
       alert('로그인이 필요합니다.');
@@ -182,7 +181,6 @@ const RecruitDetail = () => {
     }
   };
 
-
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleString('ko-KR');
   };
@@ -234,6 +232,7 @@ const RecruitDetail = () => {
       </div>
 
       <div className="card bg-surface-2 border border-night overflow-hidden">
+   
         <div className="px-6 py-5 border-b border-night bg-surface">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center space-x-2">
@@ -281,6 +280,7 @@ const RecruitDetail = () => {
             </div>
           </div>
 
+    
           <div className="mt-4 p-4 bg-indigo-50 rounded-lg">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
@@ -345,6 +345,7 @@ const RecruitDetail = () => {
           )}
         </div>
 
+     
         {recruit.tags.length > 0 && (
           <div className="px-6 py-4 bg-surface border-b border-night">
             <div className="flex flex-wrap gap-2">
@@ -367,6 +368,7 @@ const RecruitDetail = () => {
             </ReactMarkdown>
           </div>
 
+        
           {recruit.images && recruit.images.length > 0 && (
             <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
               {recruit.images.map((image, index) => (
@@ -382,6 +384,7 @@ const RecruitDetail = () => {
           )}
         </div>
 
+     
         {recruit.status === 'recruiting' && (
           <div className="px-6 py-4 border-t border-night bg-surface">
             <div className="flex items-center justify-between mb-4">
@@ -398,6 +401,7 @@ const RecruitDetail = () => {
               )}
             </div>
 
+        
             {recruit.members && recruit.members.length > 0 && (
               <div className="mb-4">
                 <p className="text-sm text-night-muted mb-2">승인된 팀원:</p>
@@ -422,6 +426,7 @@ const RecruitDetail = () => {
               </div>
             )}
 
+        
             {isAuthor && recruit.pendingMembers && recruit.pendingMembers.length > 0 && (
               <div className="mb-4">
                 <p className="text-sm text-night-muted mb-2">참가 신청 대기:</p>
@@ -452,6 +457,7 @@ const RecruitDetail = () => {
               </div>
             )}
 
+        
             {isAuthenticated && !hasJoined && (
               <button
                 onClick={handleJoinTeam}
@@ -461,6 +467,7 @@ const RecruitDetail = () => {
               </button>
             )}
 
+       
             {isAuthenticated && isPendingMember && (
               <button
                 onClick={handleCancelJoin}
@@ -472,6 +479,7 @@ const RecruitDetail = () => {
           </div>
         )}
 
+ 
         <div className="px-6 py-4 border-t border-night bg-surface">
           <button
             onClick={handleLike}
@@ -483,6 +491,7 @@ const RecruitDetail = () => {
           </button>
         </div>
 
+    
         <div className="px-6 py-4 border-t border-night bg-surface">
           <h3 className="text-lg font-semibold mb-4">
             댓글 {recruit.comments.length}

@@ -4,7 +4,7 @@ export interface IDiscordMessage extends Document {
   messageId: string;
   channelId: string;
   channelName: string;
-  threadName?: string;
+  threadName?: string; 
   content: string;
   author: {
     username: string;
@@ -72,6 +72,7 @@ const DiscordMessageSchema = new Schema<IDiscordMessage>(
     timestamps: true,
   }
 );
+
 
 DiscordMessageSchema.index({ channelId: 1, timestamp: -1 });
 DiscordMessageSchema.index({ type: 1, timestamp: -1 });

@@ -8,7 +8,9 @@ class SocketService {
 
   connect(token: string, onConnect?: () => void) {
     if (this.socket?.connected) {
+      
       if (onConnect) {
+        
         setTimeout(() => {
           onConnect();
         }, 100);
@@ -16,10 +18,12 @@ class SocketService {
       return;
     }
 
+    
     if (onConnect) {
       this.onConnectCallbacks.push(onConnect);
     }
 
+    
     const serverUrl = window.location.origin;
 
     this.socket = io(serverUrl, {
@@ -33,12 +37,14 @@ class SocketService {
     this.socket.on('connect', () => {
       console.log('✅ Socket connected');
       this.reconnectAttempts = 0;
+      
       this.onConnectCallbacks.forEach(callback => callback());
       this.onConnectCallbacks = [];
     });
 
     this.socket.on('reconnect', () => {
       console.log('🔄 Socket reconnected');
+      
       this.onConnectCallbacks.forEach(callback => callback());
     });
 
@@ -96,6 +102,7 @@ class SocketService {
     if (this.socket) {
       this.socket.on('recruit-application', callback);
     } else {
+      
       console.warn('Socket not initialized, listener will be registered after connection');
     }
   }
@@ -114,6 +121,7 @@ class SocketService {
     if (this.socket) {
       this.socket.on('recruit-approval', callback);
     } else {
+      
       console.warn('Socket not initialized, listener will be registered after connection');
     }
   }

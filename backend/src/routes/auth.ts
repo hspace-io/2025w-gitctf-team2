@@ -7,6 +7,7 @@ import { authLimiter, registerLimiter } from '../middleware/security';
 
 const router = express.Router();
 
+
 router.post(
   '/register',
   registerLimiter,
@@ -29,9 +30,11 @@ router.post(
 
       const { username, email, password } = req.body;
 
+      
       const userCount = await User.countDocuments();
       const isFirstUser = userCount === 0;
 
+      
       const existingUser = await User.findOne({
         $or: [{ email }, { username }],
       });
@@ -43,13 +46,15 @@ router.post(
         return;
       }
 
+      
       const hashedPassword = await bcrypt.hash(password, 10);
 
+      
       const user = new User({
         username,
         email,
         password: hashedPassword,
-        role: isFirstUser ? 'admin' : 'user', // 첫 번째 사용자는 자동으로 관리자
+        role: isFirstUser ? 'admin' : 'user', 
       });
 
       await user.save();
@@ -72,6 +77,7 @@ router.post(
   }
 );
 
+
 router.post(
   '/login',
   authLimiter,
@@ -89,18 +95,21 @@ router.post(
 
       const { email, password } = req.body;
 
+      
       const user = await User.findOne({ email });
       if (!user) {
         res.status(401).json({ error: 'Invalid credentials' });
         return;
       }
 
+      
       const isValidPassword = await bcrypt.compare(password, user.password);
       if (!isValidPassword) {
         res.status(401).json({ error: 'Invalid credentials' });
         return;
       }
 
+      
       const secret = process.env.JWT_SECRET;
       if (!secret) {
         throw new Error('JWT_SECRET is not configured');
@@ -127,6 +136,7 @@ router.post(
     }
   }
 );
+
 
 router.get('/me', async (req: Request, res: Response): Promise<void> => {
   try {

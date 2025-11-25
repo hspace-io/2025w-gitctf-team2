@@ -1,5 +1,6 @@
 import Seat from '../models/Seat';
 
+
 export const initializeSeatsIfEmpty = async () => {
   try {
     const seatCount = await Seat.countDocuments();
@@ -13,23 +14,23 @@ export const initializeSeatsIfEmpty = async () => {
 
     const seatsToCreate = [];
 
-    // WHITE ROOM (36 seats)
+    
     for (let i = 1; i <= 36; i++) {
       seatsToCreate.push({
         seatNumber: `W${String(i).padStart(2, '0')}`,
         room: 'white',
         isAvailable: true,
-        position: { x: 0, y: 0 }, // Frontend will handle layout
+        position: { x: 0, y: 0 }, 
       });
     }
 
-    // STAFF ROOM (12 seats)
+    
     for (let i = 1; i <= 12; i++) {
       seatsToCreate.push({
         seatNumber: `S${String(i).padStart(2, '0')}`,
         room: 'staff',
         isAvailable: true,
-        position: { x: 0, y: 0 }, // Frontend will handle layout
+        position: { x: 0, y: 0 }, 
       });
     }
 

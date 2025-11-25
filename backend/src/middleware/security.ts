@@ -1,9 +1,10 @@
 import rateLimit from 'express-rate-limit';
 import { Request, Response, NextFunction } from 'express';
 
+
 export const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15분
-  max: 100, // 최대 100 요청
+  windowMs: 15 * 60 * 1000, 
+  max: 100, 
   message: '너무 많은 요청이 발생했습니다. 잠시 후 다시 시도해주세요.',
   standardHeaders: true,
   legacyHeaders: false,
@@ -15,13 +16,14 @@ export const apiLimiter = rateLimit({
   },
 });
 
+
 export const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15분
-  max: 5, // 최대 5회 시도
+  windowMs: 15 * 60 * 1000, 
+  max: 5, 
   message: '너무 많은 로그인 시도가 발생했습니다. 15분 후 다시 시도해주세요.',
   standardHeaders: true,
   legacyHeaders: false,
-  skipSuccessfulRequests: true, // 성공한 요청은 카운트하지 않음
+  skipSuccessfulRequests: true, 
   handler: (req: Request, res: Response) => {
     res.status(429).json({
       error: '너무 많은 로그인 시도가 발생했습니다. 15분 후 다시 시도해주세요.',
@@ -30,9 +32,10 @@ export const authLimiter = rateLimit({
   },
 });
 
+
 export const registerLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1시간
-  max: 3, // 최대 3회 시도
+  windowMs: 60 * 60 * 1000, 
+  max: 3, 
   message: '너무 많은 회원가입 시도가 발생했습니다. 1시간 후 다시 시도해주세요.',
   standardHeaders: true,
   legacyHeaders: false, 
@@ -44,9 +47,10 @@ export const registerLimiter = rateLimit({
   },
 });
 
+
 export const createPostLimiter = rateLimit({
-  windowMs: 60 * 1000, // 1분
-  max: 10, // 최대 10개 (개발 환경을 위해 완화)
+  windowMs: 60 * 1000, 
+  max: 10, 
   message: '게시글 작성이 너무 빠릅니다. 잠시 후 다시 시도해주세요.',
   standardHeaders: true,
   legacyHeaders: false,
@@ -58,9 +62,10 @@ export const createPostLimiter = rateLimit({
   },
 });
 
+
 export const commentLimiter = rateLimit({
-  windowMs: 60 * 1000, // 1분
-  max: 20, // 최대 20개 (개발 환경을 위해 완화)
+  windowMs: 60 * 1000, 
+  max: 20, 
   message: '댓글 작성이 너무 빠릅니다. 잠시 후 다시 시도해주세요.',
   standardHeaders: true,
   legacyHeaders: false,
@@ -72,13 +77,14 @@ export const commentLimiter = rateLimit({
   },
 });
 
+
 export const limitContentSize = (
   req: Request,
   res: Response,
   next: NextFunction
 ): void => {
   const contentLength = req.headers['content-length'];
-  const maxSize = 10 * 1024 * 1024; // 10MB
+  const maxSize = 10 * 1024 * 1024; 
 
   if (contentLength && parseInt(contentLength) > maxSize) {
     res.status(413).json({
@@ -90,11 +96,13 @@ export const limitContentSize = (
   next();
 };
 
+
 export const sanitizeInput = (
   req: Request,
   res: Response,
   next: NextFunction
 ): void => {
+  
   const dangerousPatterns = [
     /(\$where)/gi,
     /(\$ne)/gi,

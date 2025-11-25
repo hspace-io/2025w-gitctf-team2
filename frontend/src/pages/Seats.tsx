@@ -56,6 +56,7 @@ const Seats = () => {
     }
 
     if (!seat.isAvailable) {
+      
       if (seat.currentUser?._id === user?.id) {
         if (window.confirm('좌석을 반납하시겠습니까?')) {
           handleReleaseSeat(seat.seatNumber);
@@ -123,14 +124,14 @@ const Seats = () => {
 
   const renderWhiteRoomSeats = () => {
     const whiteSeats = seats.filter((s: Seat) => s.room === 'white');
-    
-    // 상단 12석 (2줄)
+
     const topSeats = whiteSeats.slice(0, 12);
-    // 하단 24석 (2줄)
+    
     const bottomSeats = whiteSeats.slice(12, 36);
 
     return (
       <div className="space-y-8">
+   
         <div>
           <h3 className="text-base font-semibold mb-4 text-night-muted">Section A</h3>
           <div className="grid grid-cols-6 gap-3">
@@ -160,6 +161,7 @@ const Seats = () => {
           </div>
         </div>
 
+   
         <div>
           <h3 className="text-base font-semibold mb-4 text-night-muted">Section B</h3>
           <div className="grid grid-cols-8 gap-3">
@@ -249,6 +251,7 @@ const Seats = () => {
       <div className="mb-8">
         <h1 className="text-4xl font-bold text-night-heading mb-6">HSPACE 좌석 예약</h1>
         
+  
         {myReservation && (
           <div className="alert alert-info mb-6">
             <div className="flex items-center justify-between">
@@ -269,6 +272,7 @@ const Seats = () => {
           </div>
         )}
 
+   
         <div className="flex flex-wrap items-center gap-5 text-sm mb-6 text-night-muted">
           {[
             { label: '이용 가능', color: '#34c759' },
@@ -285,6 +289,7 @@ const Seats = () => {
           ))}
         </div>
 
+   
         <div className="flex gap-3 mb-8">
           <button
             onClick={() => setSelectedRoom('white')}
@@ -301,6 +306,7 @@ const Seats = () => {
         </div>
       </div>
 
+    
       <div className="card p-10 bg-surface-2 border border-night">
         <h2 className="text-3xl font-semibold mb-8 text-night-heading">
           {selectedRoom === 'white' ? 'WHITE ROOM' : 'STAFF ROOM'}
@@ -308,6 +314,7 @@ const Seats = () => {
         {selectedRoom === 'white' ? renderWhiteRoomSeats() : renderStaffRoomSeats()}
       </div>
 
+    
       {showReserveModal && selectedSeat && (
         <div className="modal-overlay">
           <div className="modal-content p-8">
@@ -361,6 +368,4 @@ const Seats = () => {
 };
 
 export default Seats;
-
-
 

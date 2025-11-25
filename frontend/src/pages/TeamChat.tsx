@@ -40,9 +40,10 @@ const TeamChat = () => {
   const loadChatData = async () => {
     try {
       setLoading(true);
+      
       const recruit = await recruitService.getRecruit(recruitId!);
       setRecruitTitle(recruit.title);
-      
+
       const data = await recruitService.getTeamChat(recruitId!);
       setChatMessages(data.messages || []);
     } catch (error: any) {
@@ -78,6 +79,7 @@ const TeamChat = () => {
     const handleNewMessage = (message: TeamChatMessage) => {
       console.log('📨 Received team message:', message);
       setChatMessages(prev => {
+        
         if (prev.some(m => m._id === message._id)) {
           return prev;
         }
@@ -98,12 +100,14 @@ const TeamChat = () => {
 
     const messageContent = chatInput.trim();
     setChatInput(''); 
+
     try {
       setSendingChat(true);
       const newMessage = await recruitService.sendChatMessage(recruitId, messageContent);
-      
+
       if (newMessage) {
         setChatMessages(prev => {
+          
           if (prev.some(m => m._id === newMessage._id)) {
             return prev;
           }
@@ -111,6 +115,7 @@ const TeamChat = () => {
         });
       }
     } catch (error: any) {
+      
       setChatInput(messageContent);
       alert(error.response?.data?.error || '메시지 전송에 실패했습니다.');
     } finally {
@@ -139,6 +144,7 @@ const TeamChat = () => {
 
   return (
     <div className="min-h-screen bg-night flex flex-col">
+    
       <div className="sticky top-0 z-10 bg-[#05070f]/95 backdrop-blur-xl border-b border-[#1b1f2f]">
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center gap-4">
           <button
@@ -156,6 +162,7 @@ const TeamChat = () => {
         </div>
       </div>
 
+      
       <div 
         ref={messagesContainerRef}
         className="flex-1 overflow-y-auto px-4 py-6 space-y-4 scrollbar-night"
@@ -174,7 +181,7 @@ const TeamChat = () => {
               const prevMessage = index > 0 ? chatMessages[index - 1] : null;
               const showAvatar = !prevMessage || prevMessage.author._id !== msg.author._id;
               const showTime = !prevMessage || 
-                new Date(msg.createdAt).getTime() - new Date(prevMessage.createdAt).getTime() > 300000;
+                new Date(msg.createdAt).getTime() - new Date(prevMessage.createdAt).getTime() > 300000; 
 
               return (
                 <div key={msg._id} className={`flex ${isMyMessage ? 'justify-end' : 'justify-start'} gap-2`}>
@@ -231,6 +238,7 @@ const TeamChat = () => {
         )}
       </div>
 
+      
       <div className="sticky bottom-0 bg-[#05070f]/95 backdrop-blur-xl border-t border-[#1b1f2f]">
         <div className="max-w-4xl mx-auto px-4 py-4">
           <form onSubmit={handleChatSubmit} className="flex gap-2">

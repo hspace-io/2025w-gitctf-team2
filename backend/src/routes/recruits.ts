@@ -9,6 +9,7 @@ import { io } from '../server';
 
 const router = express.Router();
 
+
 router.get('/', async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { category, status, page = '1', limit = '20' } = req.query;
@@ -47,6 +48,9 @@ router.get('/', async (req: AuthRequest, res: Response): Promise<void> => {
   }
 });
 
+
+
+
 router.get(
   '/my-chats',
   authenticateToken,
@@ -54,6 +58,7 @@ router.get(
     try {
       const userIdStr = req.userId as string;
 
+      
       const recruits = await Recruit.find({
         $or: [
           { author: userIdStr },
@@ -66,24 +71,28 @@ router.get(
         .select('title category status author members teamChat createdAt updatedAt')
         .sort({ updatedAt: -1 });
 
+      
       const chatRooms = recruits.map(recruit => {
+        
         const sortedChat = recruit.teamChat && recruit.teamChat.length > 0
           ? [...recruit.teamChat].sort((a: any, b: any) => {
               const dateA = new Date(a.createdAt).getTime();
               const dateB = new Date(b.createdAt).getTime();
-              return dateB - dateA; // 최신순
+              return dateB - dateA; 
             })
           : [];
         
         const lastMessage = sortedChat.length > 0 ? sortedChat[0] : null;
 
+        
+        
         return {
           _id: recruit._id,
           title: recruit.title,
           category: recruit.category,
           status: recruit.status,
           author: recruit.author,
-          members: recruit.members,
+          members: recruit.members, 
           lastMessage: lastMessage ? {
             _id: lastMessage._id.toString(),
             content: lastMessage.content,
@@ -93,7 +102,7 @@ router.get(
               username: (lastMessage.author as any).username || 'Unknown',
             } : null,
           } : null,
-          unreadCount: 0,
+          unreadCount: 0, 
           createdAt: recruit.createdAt,
           updatedAt: recruit.updatedAt,
         };
@@ -106,6 +115,7 @@ router.get(
     }
   }
 );
+
 
 router.get('/:id', validateObjectId('id'), async (req: AuthRequest, res: Response): Promise<void> => {
   try {
@@ -120,6 +130,7 @@ router.get('/:id', validateObjectId('id'), async (req: AuthRequest, res: Respons
       return;
     }
 
+    
     recruit.views += 1;
     await recruit.save();
 
@@ -170,7 +181,7 @@ router.post(
         author: req.userId,
         maxMembers,
         currentMembers: 1,
-        members: [req.userId],
+        members: [req.userId], 
         pendingMembers: [],
         tags: tags || [],
         images: images || [],
@@ -191,6 +202,7 @@ router.post(
     }
   }
 );
+
 
 router.put(
   '/:id',
@@ -235,6 +247,7 @@ router.put(
         return;
       }
 
+      
       if (
         recruit.author.toString() !== req.userId &&
         req.userRole !== 'admin'
@@ -250,6 +263,7 @@ router.put(
       if (maxMembers) recruit.maxMembers = maxMembers;
       if (images !== undefined) recruit.images = images;
       if (currentMembers !== undefined) {
+        
         if (currentMembers > recruit.maxMembers) {
           res.status(400).json({ error: 'Current members cannot exceed max members' });
           return;
@@ -274,6 +288,7 @@ router.put(
   }
 );
 
+
 router.delete(
   '/:id',
   authenticateToken,
@@ -286,6 +301,7 @@ router.delete(
         return;
       }
 
+      
       if (
         recruit.author.toString() !== req.userId &&
         req.userRole !== 'admin'
@@ -339,6 +355,7 @@ router.post(
   }
 );
 
+
 router.post(
   '/:id/comments',
   authenticateToken,
@@ -382,6 +399,7 @@ router.post(
   }
 );
 
+
 router.delete(
   '/:recruitId/comments/:commentId',
   authenticateToken,
@@ -399,6 +417,7 @@ router.delete(
         return;
       }
 
+      
       if (
         comment.author.toString() !== req.userId &&
         req.userRole !== 'admin'
@@ -418,6 +437,9 @@ router.delete(
   }
 );
 
+
+
+
 router.post(
   '/:id/join',
   authenticateToken,
@@ -429,22 +451,26 @@ router.post(
         return;
       }
 
+      
       if (recruit.status === 'closed') {
         res.status(400).json({ error: '모집이 마감되었습니다' });
         return;
       }
 
+      
       const userIdStr = req.userId as string;
       if (recruit.members.some(id => id.toString() === userIdStr)) {
         res.status(400).json({ error: '이미 팀원입니다' });
         return;
       }
 
+      
       if (recruit.pendingMembers.some(id => id.toString() === userIdStr)) {
         res.status(400).json({ error: '이미 참가 신청했습니다' });
         return;
       }
 
+      
       if (recruit.currentMembers >= recruit.maxMembers) {
         res.status(400).json({ error: '팀원이 가득 찼습니다' });
         return;
@@ -453,8 +479,10 @@ router.post(
       recruit.pendingMembers.push(userIdStr as any);
       await recruit.save();
 
+      
       const applicant = await User.findById(userIdStr).select('username');
 
+      
       const authorId = recruit.author.toString();
       const applicationNotification = {
         type: 'recruit-application',
@@ -476,6 +504,7 @@ router.post(
     }
   }
 );
+
 
 router.delete(
   '/:id/join',
@@ -502,6 +531,7 @@ router.delete(
   }
 );
 
+
 router.post(
   '/:id/approve/:userId',
   authenticateToken,
@@ -514,33 +544,39 @@ router.post(
         return;
       }
 
+      
       if (recruit.author.toString() !== req.userId) {
         res.status(403).json({ error: 'Not authorized' });
         return;
       }
 
       const { userId } = req.params;
-      const { approve } = req.body; // true: 승인, false: 거부
+      const { approve } = req.body; 
 
+      
       if (!recruit.pendingMembers.some(id => id.toString() === userId)) {
         res.status(400).json({ error: '참가 신청 내역이 없습니다' });
         return;
       }
 
+      
       recruit.pendingMembers = recruit.pendingMembers.filter(
         id => id.toString() !== userId
       );
 
+      
       const applicant = await User.findById(userId).select('username');
       const recruitTitle = recruit.title;
 
       if (approve) {
+        
         if (recruit.currentMembers >= recruit.maxMembers) {
           await recruit.save();
           res.status(400).json({ error: '팀원이 가득 찼습니다' });
           return;
         }
 
+        
         recruit.members.push(userId as any);
         recruit.currentMembers += 1;
       }
@@ -549,6 +585,7 @@ router.post(
       await recruit.populate('members', 'username');
       await recruit.populate('pendingMembers', 'username');
 
+      
       const notificationData = {
         type: approve ? 'recruit-approval' : 'recruit-rejection',
         recruitId: recruit._id.toString(),
@@ -574,6 +611,7 @@ router.post(
   }
 );
 
+
 router.delete(
   '/:id/members/:userId',
   authenticateToken,
@@ -586,6 +624,7 @@ router.delete(
         return;
       }
 
+      
       if (recruit.author.toString() !== req.userId) {
         res.status(403).json({ error: 'Not authorized' });
         return;
@@ -605,6 +644,7 @@ router.delete(
   }
 );
 
+
 router.get(
   '/:id/chat',
   authenticateToken,
@@ -620,8 +660,10 @@ router.get(
         return;
       }
 
+      
       const userIdStr = req.userId as string;
       const isAuthor = recruit.author.toString() === userIdStr;
+      
       const isMember = recruit.members.some((member: any) => {
         const memberId = member._id ? member._id.toString() : member.toString();
         return memberId === userIdStr;
@@ -632,6 +674,7 @@ router.get(
         return;
       }
 
+      
       const sortedMessages = [...recruit.teamChat].sort((a, b) => {
         const dateA = new Date(a.createdAt).getTime();
         const dateB = new Date(b.createdAt).getTime();
@@ -648,6 +691,7 @@ router.get(
     }
   }
 );
+
 
 router.post(
   '/:id/chat',
@@ -669,8 +713,10 @@ router.post(
         return;
       }
 
+      
       const userIdStr = req.userId as string;
       const isAuthor = recruit.author.toString() === userIdStr;
+      
       const isMember = recruit.members.some((member: any) => {
         const memberId = member._id ? member._id.toString() : member.toString();
         return memberId === userIdStr;
@@ -683,11 +729,13 @@ router.post(
 
       const { content } = req.body;
 
+      
       if (content.length > 1000) {
         res.status(400).json({ error: '메시지는 1000자 이하여야 합니다.' });
         return;
       }
 
+      
       const sanitizedContent = content
         .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
         .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '')
@@ -702,6 +750,7 @@ router.post(
 
       await recruit.save();
       
+      
       const updatedRecruit = await Recruit.findById(req.params.id)
         .populate('teamChat.author', 'username _id');
       
@@ -711,6 +760,7 @@ router.post(
       }
 
       const lastMessage = updatedRecruit.teamChat[updatedRecruit.teamChat.length - 1];
+      
       
       const messageData = {
         _id: lastMessage._id.toString(),
@@ -722,6 +772,7 @@ router.post(
         createdAt: lastMessage.createdAt,
       };
 
+      
       io.to(`team-${req.params.id}`).emit('team-message', messageData);
 
       res.status(201).json({
@@ -734,6 +785,7 @@ router.post(
     }
   }
 );
+
 
 router.delete(
   '/:recruitId/chat/:messageId',
@@ -753,6 +805,7 @@ router.delete(
         return;
       }
 
+      
       const isAuthor = recruit.author.toString() === req.userId;
       const isMessageAuthor = message.author.toString() === req.userId;
 
